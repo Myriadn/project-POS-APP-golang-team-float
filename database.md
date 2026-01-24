@@ -1,3 +1,4 @@
+```mermaid
 erDiagram
 
 ROLES {
@@ -85,20 +86,6 @@ RESERVATIONS {
   string customer_name
   datetime reservation_time
   boolean is_cancelled
-}
-
-OTP_VERIFICATIONS {
-  int id PK
-  string email
-  string otp
-  datetime expired_at
-}
-
-PASSWORD_RESETS {
-  int id PK
-  string email
-  string token
-  datetime expired_at
 }
 
 ROLES ||--o{ USERS : has
