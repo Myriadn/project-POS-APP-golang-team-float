@@ -80,8 +80,7 @@ CREATE TABLE otp_codes (
 CREATE TABLE sessions (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    token VARCHAR(500) UNIQUE NOT NULL,
-    refresh_token VARCHAR(500) UNIQUE,
+    token UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
     ip_address VARCHAR(45),
     user_agent TEXT,
     is_active BOOLEAN DEFAULT true,
