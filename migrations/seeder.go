@@ -1,0 +1,166 @@
+package migrations
+
+import (
+	"gorm.io/gorm"
+
+	"project-POS-APP-golang-team-float/internal/domain/entity"
+	"project-POS-APP-golang-team-float/pkg/utils"
+)
+
+func Seed(db *gorm.DB) error {
+	if err := seedRoles(db); err != nil {
+		return err
+	}
+
+	if err := seedCategories(db); err != nil {
+		return err
+	}
+
+	if err := seedPaymentMethods(db); err != nil {
+		return err
+	}
+
+	if err := seedTables(db); err != nil {
+		return err
+	}
+
+	if err := seedSuperAdmin(db); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func seedRoles(db *gorm.DB) error {
+	roles := []entity.Role{
+		{Name: "superadmin", Description: "Super Administrator dengan akses penuh"},
+		{Name: "admin", Description: "Administrator dengan akses terbatas"},
+		{Name: "staff", Description: "Staff dengan akses operasional dasar"},
+	}
+
+	for _, role := range roles {
+		var existing entity.Role
+		result := db.Where("name = ?", role.Name).First(&existing)
+		if result.RowsAffected == 0 {
+			if err := db.Create(&role).Error; err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func seedCategories(db *gorm.DB) error {
+	categories := []entity.Category{
+		{Name: "All", Description: "Semua kategori menu"},
+		{Name: "Pizza", Description: "Berbagai macam pizza", Icon: "/icons/pizza.png"},
+		{Name: "Burger", Description: "Burger dengan berbagai pilihan", Icon: "/icons/burger.png"},
+		{Name: "Chicken", Description: "Ayam goreng dan panggang", Icon: "/icons/chicken.png"},
+		{Name: "Bakery", Description: "Roti dan kue", Icon: "/icons/bakery.png"},
+		{Name: "Beverage", Description: "Minuman dingin dan panas", Icon: "/icons/beverage.png"},
+		{Name: "Seafood", Description: "Hidangan laut", Icon: "/icons/seafood.png"},
+	}
+
+	for _, cat := range categories {
+		var existing entity.Category
+		result := db.Where("name = ?", cat.Name).First(&existing)
+		if result.RowsAffected == 0 {
+			if err := db.Create(&cat).Error; err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func seedPaymentMethods(db *gorm.DB) error {
+	methods := []entity.PaymentMethod{
+		{Name: "Cash", IsActive: true},
+		{Name: "Visa Card", IsActive: true},
+		{Name: "Master Card", IsActive: true},
+		{Name: "Debit Card", IsActive: true},
+	}
+
+	for _, method := range methods {
+		var existing entity.PaymentMethod
+		result := db.Where("name = ?", method.Name).First(&existing)
+		if result.RowsAffected == 0 {
+			if err := db.Create(&method).Error; err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func seedTables(db *gorm.DB) error {
+	tables := []entity.Table{
+		// Floor 1
+		{TableNumber: "01", Floor: 1, Capacity: 4, Status: "available"},
+		{TableNumber: "02", Floor: 1, Capacity: 4, Status: "available"},
+		{TableNumber: "03", Floor: 1, Capacity: 4, Status: "available"},
+		{TableNumber: "04", Floor: 1, Capacity: 4, Status: "available"},
+		{TableNumber: "05", Floor: 1, Capacity: 6, Status: "available"},
+		{TableNumber: "06", Floor: 1, Capacity: 6, Status: "available"},
+		{TableNumber: "07", Floor: 1, Capacity: 8, Status: "available"},
+		// Floor 2
+		{TableNumber: "08", Floor: 2, Capacity: 4, Status: "available"},
+		{TableNumber: "09", Floor: 2, Capacity: 4, Status: "available"},
+		{TableNumber: "10", Floor: 2, Capacity: 4, Status: "available"},
+		{TableNumber: "11", Floor: 2, Capacity: 4, Status: "available"},
+		{TableNumber: "12", Floor: 2, Capacity: 6, Status: "available"},
+		{TableNumber: "13", Floor: 2, Capacity: 6, Status: "available"},
+		{TableNumber: "14", Floor: 2, Capacity: 8, Status: "available"},
+		// Floor 3
+		{TableNumber: "15", Floor: 3, Capacity: 4, Status: "available"},
+		{TableNumber: "16", Floor: 3, Capacity: 4, Status: "available"},
+		{TableNumber: "17", Floor: 3, Capacity: 4, Status: "available"},
+		{TableNumber: "18", Floor: 3, Capacity: 4, Status: "available"},
+		{TableNumber: "19", Floor: 3, Capacity: 6, Status: "available"},
+		{TableNumber: "20", Floor: 3, Capacity: 6, Status: "available"},
+		{TableNumber: "21", Floor: 3, Capacity: 10, Status: "available"},
+	}
+
+	for _, table := range tables {
+		var existing entity.Table
+		result := db.Where("table_number = ?", table.TableNumber).First(&existing)
+		if result.RowsAffected == 0 {
+			if err := db.Create(&table).Error; err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func seedSuperAdmin(db *gorm.DB) error {
+	var existingUser entity.User
+	result := db.Where("email = ?", "superadmin@cosypos.com").First(&existingUser)
+	if result.RowsAffected > 0 {
+		return nil
+	}
+
+	var role entity.Role
+	if err := db.Where("name = ?", "superadmin").First(&role).Error; err != nil {
+		return err
+	}
+
+	passwordHash, err := utils.HashPassword("Admin@123")
+	if err != nil {
+		return err
+	}
+
+	user := &entity.User{
+		Email:        "superadmin@cosypos.com",
+		Username:     "superadmin",
+		PasswordHash: passwordHash,
+		FullName:     "Super Administrator",
+		Phone:        "+62 812 3456 7890",
+		RoleID:       role.ID,
+		ShiftStart:   "09:00",
+		ShiftEnd:     "18:00",
+		IsActive:     true,
+	}
+
+	return db.Create(user).Error
+}

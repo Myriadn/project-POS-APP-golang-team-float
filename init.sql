@@ -404,81 +404,81 @@ CREATE TRIGGER update_admin_permissions_updated_at
 -- SEEDER DATA
 -- =====================================================
 
--- Seeder: Roles
-INSERT INTO roles (name, description) VALUES
-    ('superadmin', 'Super Administrator dengan akses penuh ke semua fitur'),
-    ('admin', 'Administrator dengan akses terbatas sesuai permission'),
-    ('staff', 'Staff biasa dengan akses operasional dasar');
+-- -- Seeder: Roles
+-- INSERT INTO roles (name, description) VALUES
+--     ('superadmin', 'Super Administrator dengan akses penuh ke semua fitur'),
+--     ('admin', 'Administrator dengan akses terbatas sesuai permission'),
+--     ('staff', 'Staff biasa dengan akses operasional dasar');
 
--- Seeder: Categories
-INSERT INTO categories (name, description, icon) VALUES
-    ('All', 'Semua kategori menu', NULL),
-    ('Pizza', 'Berbagai macam pizza dengan topping pilihan', '/icons/pizza.png'),
-    ('Burger', 'Burger dengan daging sapi, ayam, atau ikan', '/icons/burger.png'),
-    ('Chicken', 'Ayam goreng, panggang, dan olahan ayam lainnya', '/icons/chicken.png'),
-    ('Bakery', 'Roti, kue, dan pastry segar', '/icons/bakery.png'),
-    ('Beverage', 'Minuman dingin dan panas', '/icons/beverage.png'),
-    ('Seafood', 'Hidangan laut segar', '/icons/seafood.png');
+-- -- Seeder: Categories
+-- INSERT INTO categories (name, description, icon) VALUES
+--     ('All', 'Semua kategori menu', NULL),
+--     ('Pizza', 'Berbagai macam pizza dengan topping pilihan', '/icons/pizza.png'),
+--     ('Burger', 'Burger dengan daging sapi, ayam, atau ikan', '/icons/burger.png'),
+--     ('Chicken', 'Ayam goreng, panggang, dan olahan ayam lainnya', '/icons/chicken.png'),
+--     ('Bakery', 'Roti, kue, dan pastry segar', '/icons/bakery.png'),
+--     ('Beverage', 'Minuman dingin dan panas', '/icons/beverage.png'),
+--     ('Seafood', 'Hidangan laut segar', '/icons/seafood.png');
 
--- Seeder: Payment Methods
-INSERT INTO payment_methods (name, is_active) VALUES
-    ('Cash', true),
-    ('Visa Card', true),
-    ('Master Card', true),
-    ('Debit Card', true);
+-- -- Seeder: Payment Methods
+-- INSERT INTO payment_methods (name, is_active) VALUES
+--     ('Cash', true),
+--     ('Visa Card', true),
+--     ('Master Card', true),
+--     ('Debit Card', true);
 
--- Seeder: Tables (7 tables per floor, 3 floors)
-INSERT INTO tables (table_number, floor, capacity, status) VALUES
-    -- 1st Floor
-    ('01', 1, 4, 'available'),
-    ('02', 1, 4, 'available'),
-    ('03', 1, 4, 'available'),
-    ('04', 1, 4, 'available'),
-    ('05', 1, 6, 'available'),
-    ('06', 1, 6, 'available'),
-    ('07', 1, 8, 'available'),
-    -- 2nd Floor
-    ('08', 2, 4, 'available'),
-    ('09', 2, 4, 'available'),
-    ('10', 2, 4, 'available'),
-    ('11', 2, 4, 'available'),
-    ('12', 2, 6, 'available'),
-    ('13', 2, 6, 'available'),
-    ('14', 2, 8, 'available'),
-    -- 3rd Floor
-    ('15', 3, 4, 'available'),
-    ('16', 3, 4, 'available'),
-    ('17', 3, 4, 'available'),
-    ('18', 3, 4, 'available'),
-    ('19', 3, 6, 'available'),
-    ('20', 3, 6, 'available'),
-    ('21', 3, 10, 'available');
+-- -- Seeder: Tables (7 tables per floor, 3 floors)
+-- INSERT INTO tables (table_number, floor, capacity, status) VALUES
+--     -- 1st Floor
+--     ('01', 1, 4, 'available'),
+--     ('02', 1, 4, 'available'),
+--     ('03', 1, 4, 'available'),
+--     ('04', 1, 4, 'available'),
+--     ('05', 1, 6, 'available'),
+--     ('06', 1, 6, 'available'),
+--     ('07', 1, 8, 'available'),
+--     -- 2nd Floor
+--     ('08', 2, 4, 'available'),
+--     ('09', 2, 4, 'available'),
+--     ('10', 2, 4, 'available'),
+--     ('11', 2, 4, 'available'),
+--     ('12', 2, 6, 'available'),
+--     ('13', 2, 6, 'available'),
+--     ('14', 2, 8, 'available'),
+--     -- 3rd Floor
+--     ('15', 3, 4, 'available'),
+--     ('16', 3, 4, 'available'),
+--     ('17', 3, 4, 'available'),
+--     ('18', 3, 4, 'available'),
+--     ('19', 3, 6, 'available'),
+--     ('20', 3, 6, 'available'),
+--     ('21', 3, 10, 'available');
 
--- Seeder: Superadmin User
--- Password: Admin@123 (hashed with bcrypt, you should generate this in your application)
-INSERT INTO users (
-    email,
-    username,
-    password_hash,
-    full_name,
-    phone,
-    role_id,
-    salary,
-    shift_start,
-    shift_end,
-    is_active
-) VALUES (
-    'superadmin@cosypos.com',
-    'superadmin',
-    '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', -- password: password (change this!)
-    'Super Administrator',
-    '+1 (123) 456-7890',
-    1, -- role_id = 1 (superadmin)
-    5000.00,
-    '09:00:00',
-    '18:00:00',
-    true
-);
+-- -- Seeder: Superadmin User
+-- -- Password: Admin@123 (hashed with bcrypt, you should generate this in your application)
+-- INSERT INTO users (
+--     email,
+--     username,
+--     password_hash,
+--     full_name,
+--     phone,
+--     role_id,
+--     salary,
+--     shift_start,
+--     shift_end,
+--     is_active
+-- ) VALUES (
+--     'superadmin@cosypos.com',
+--     'superadmin',
+--     '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', -- password: password (change this!)
+--     'Super Administrator',
+--     '+1 (123) 456-7890',
+--     1, -- role_id = 1 (superadmin)
+--     5000.00,
+--     '09:00:00',
+--     '18:00:00',
+--     true
+-- );
 
 -- Create admin permissions for superadmin (all access)
 INSERT INTO admin_permissions (
@@ -504,21 +504,21 @@ INSERT INTO admin_permissions (
 -- Documentation for tables
 -- =====================================================
 
-COMMENT ON TABLE roles IS 'User roles (superadmin, admin, staff)';
-COMMENT ON TABLE users IS 'Stores staff and admin user data';
-COMMENT ON TABLE otp_codes IS 'Stores OTP codes for login and password reset';
-COMMENT ON TABLE sessions IS 'Manages user login sessions';
-COMMENT ON TABLE categories IS 'Product categories (Pizza, Burger, etc)';
-COMMENT ON TABLE products IS 'Food and beverage products';
-COMMENT ON TABLE inventory IS 'Product stock and inventory tracking';
-COMMENT ON TABLE tables IS 'Restaurant tables information';
-COMMENT ON TABLE payment_methods IS 'Available payment methods';
-COMMENT ON TABLE customers IS 'Customer data for reservations';
-COMMENT ON TABLE orders IS 'Order transactions';
-COMMENT ON TABLE order_items IS 'Order line items/details';
-COMMENT ON TABLE reservations IS 'Table reservation data';
-COMMENT ON TABLE notifications IS 'User notifications';
-COMMENT ON TABLE admin_permissions IS 'Admin access permissions for different modules';
+-- COMMENT ON TABLE roles IS 'User roles (superadmin, admin, staff)';
+-- COMMENT ON TABLE users IS 'Stores staff and admin user data';
+-- COMMENT ON TABLE otp_codes IS 'Stores OTP codes for login and password reset';
+-- COMMENT ON TABLE sessions IS 'Manages user login sessions';
+-- COMMENT ON TABLE categories IS 'Product categories (Pizza, Burger, etc)';
+-- COMMENT ON TABLE products IS 'Food and beverage products';
+-- COMMENT ON TABLE inventory IS 'Product stock and inventory tracking';
+-- COMMENT ON TABLE tables IS 'Restaurant tables information';
+-- COMMENT ON TABLE payment_methods IS 'Available payment methods';
+-- COMMENT ON TABLE customers IS 'Customer data for reservations';
+-- COMMENT ON TABLE orders IS 'Order transactions';
+-- COMMENT ON TABLE order_items IS 'Order line items/details';
+-- COMMENT ON TABLE reservations IS 'Table reservation data';
+-- COMMENT ON TABLE notifications IS 'User notifications';
+-- COMMENT ON TABLE admin_permissions IS 'Admin access permissions for different modules';
 
 -- =====================================================
 -- END OF SCHEMA
