@@ -6,44 +6,48 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 
-	"project-POS-APP-golang-team-float/internal/usecase"
-	"project-POS-APP-golang-team-float/pkg/response"
+	"project-POS-APP-golang-team-float/internal/data/entity"
+	"project-POS-APP-golang-team-float/pkg/utils"
 )
 
-type AuthMiddleware struct {
-	authUsecase *usecase.AuthUsecase
+type SessionValidator interface {
+	ValidateSession(token uuid.UUID) (*entity.User, error)
 }
 
-func NewAuthMiddleware(authUsecase *usecase.AuthUsecase) *AuthMiddleware {
-	return &AuthMiddleware{authUsecase: authUsecase}
+type AuthMiddleware struct {
+	validator SessionValidator
+}
+
+func NewAuthMiddleware(validator SessionValidator) *AuthMiddleware {
+	return &AuthMiddleware{validator: validator}
 }
 
 func (m *AuthMiddleware) Authenticate() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
-			response.Unauthorized(c, "Authorization header required")
+			utils.Unauthorized(c, "Authorization header required")
 			c.Abort()
 			return
 		}
 
 		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
 		if tokenStr == authHeader {
-			response.Unauthorized(c, "Invalid authorization format")
+			utils.Unauthorized(c, "Invalid authorization format")
 			c.Abort()
 			return
 		}
 
 		token, err := uuid.Parse(tokenStr)
 		if err != nil {
-			response.Unauthorized(c, "Invalid token format")
+			utils.Unauthorized(c, "Invalid token format")
 			c.Abort()
 			return
 		}
 
-		user, err := m.authUsecase.ValidateSession(token)
+		user, err := m.validator.ValidateSession(token)
 		if err != nil {
-			response.Unauthorized(c, err.Error())
+			utils.Unauthorized(c, err.Error())
 			c.Abort()
 			return
 		}
@@ -59,7 +63,7 @@ func (m *AuthMiddleware) RequireRole(roles ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		userRole, exists := c.Get("role")
 		if !exists {
-			response.Unauthorized(c, "Role not found")
+			utils.Unauthorized(c, "Role not found")
 			c.Abort()
 			return
 		}
@@ -72,7 +76,7 @@ func (m *AuthMiddleware) RequireRole(roles ...string) gin.HandlerFunc {
 			}
 		}
 
-		response.Unauthorized(c, "Insufficient permissions")
+		utils.Unauthorized(c, "Insufficient permissions")
 		c.Abort()
 	}
 }

@@ -1,4 +1,4 @@
-package config
+package utils
 
 import (
 	"os"
@@ -45,7 +45,7 @@ type SessionConfig struct {
 	ExpireHours int
 }
 
-func Load() (*Config, error) {
+func LoadConfig() (*Config, error) {
 	if err := godotenv.Load(); err != nil {
 		return nil, err
 	}

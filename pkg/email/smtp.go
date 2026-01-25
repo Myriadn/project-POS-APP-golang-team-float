@@ -4,16 +4,22 @@ import (
 	"fmt"
 
 	"gopkg.in/gomail.v2"
-
-	"project-POS-APP-golang-team-float/config"
 )
+
+type SMTPConfig struct {
+	Host     string
+	Port     int
+	User     string
+	Password string
+	From     string
+}
 
 type SMTPService struct {
 	dialer *gomail.Dialer
 	from   string
 }
 
-func NewSMTPService(cfg config.SMTPConfig) *SMTPService {
+func NewSMTPService(cfg SMTPConfig) *SMTPService {
 	dialer := gomail.NewDialer(cfg.Host, cfg.Port, cfg.User, cfg.Password)
 	return &SMTPService{
 		dialer: dialer,
@@ -49,22 +55,6 @@ func (s *SMTPService) SendPasswordResetOTP(to, otp string) error {
 		<p>This code will expire in 5 minutes.</p>
 		<p>If you did not request this, please ignore this email.</p>
 	`, otp))
-
-	return s.dialer.DialAndSend(m)
-}
-
-func (s *SMTPService) SendNewAdminPassword(to, name, password string) error {
-	m := gomail.NewMessage()
-	m.SetHeader("From", s.from)
-	m.SetHeader("To", to)
-	m.SetHeader("Subject", "COSYPOS - Your Admin Account")
-	m.SetBody("text/html", fmt.Sprintf(`
-		<h2>Welcome to COSYPOS, %s!</h2>
-		<p>Your admin account has been created. Here are your login credentials:</p>
-		<p><strong>Email:</strong> %s</p>
-		<p><strong>Password:</strong> %s</p>
-		<p>Please change your password after your first login.</p>
-	`, name, to, password))
 
 	return s.dialer.DialAndSend(m)
 }
