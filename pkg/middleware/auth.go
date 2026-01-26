@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"slices"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -69,11 +70,10 @@ func (m *AuthMiddleware) RequireRole(roles ...string) gin.HandlerFunc {
 		}
 
 		roleStr := userRole.(string)
-		for _, role := range roles {
-			if roleStr == role {
-				c.Next()
-				return
-			}
+
+		if slices.Contains(roles, roleStr) {
+			c.Next()
+			return
 		}
 
 		utils.Unauthorized(c, "Insufficient permissions")

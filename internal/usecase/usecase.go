@@ -15,7 +15,6 @@ type Usecase struct {
 type EmailService interface {
 	SendOTP(to, otp string) error
 	SendPasswordResetOTP(to, otp string) error
-	SendWelcomeEmail(to, password string) error
 }
 
 func NewUsecase(repo repository.RepositoryInterface, emailSvc EmailService, otpExpireMinutes, sessionExpireHrs int) *Usecase {

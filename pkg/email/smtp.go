@@ -58,21 +58,3 @@ func (s *SMTPService) SendPasswordResetOTP(to, otp string) error {
 
 	return s.dialer.DialAndSend(m)
 }
-
-func (s *SMTPService) SendWelcomeEmail(to, password string) error {
-	m := gomail.NewMessage()
-	m.SetHeader("From", s.from)
-	m.SetHeader("To", to)
-	m.SetHeader("Subject", "COSYPOS - Welcome! Your Account Has Been Created")
-	m.SetBody("text/html", fmt.Sprintf(`
-		<h2>Welcome to COSYPOS!</h2>
-		<p>Your admin account has been created successfully.</p>
-		<p>Here are your login credentials:</p>
-		<p><strong>Email:</strong> %s</p>
-		<p><strong>Temporary Password:</strong> <code style="background: #f4f4f4; padding: 5px 10px; font-size: 16px;">%s</code></p>
-		<p style="color: #ff5722;"><strong>Important:</strong> Please change your password after your first login.</p>
-		<p>If you did not expect this email, please contact your administrator.</p>
-	`, to, password))
-
-	return s.dialer.DialAndSend(m)
-}
