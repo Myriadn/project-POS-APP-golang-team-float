@@ -17,7 +17,7 @@ import (
 type suiteStaffManagement struct {
 	suite.Suite
 	mock   sqlmock.Sqlmock
-	repo   StaffManagementRepo
+	repo   StaffManagementRepoInterface
 	sqlDB  *sql.DB
 	gormDB *gorm.DB
 }
@@ -41,7 +41,7 @@ func MockDBStaffManagement(t *testing.T) (*gorm.DB, sqlmock.Sqlmock, *sql.DB) {
 func (s *suiteStaffManagement) SetupTest() {
 	s.gormDB, s.mock, s.sqlDB = MockDBStaffManagement(s.T())
 
-	s.repo = *NewStaffManagementRepo(s.gormDB)
+	s.repo = NewStaffManagementRepo(s.gormDB)
 }
 
 // tutup koneksi

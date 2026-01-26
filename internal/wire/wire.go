@@ -12,6 +12,7 @@ import (
 
 type WireConfig struct {
 	Repo             *repository.Repository
+	RepoSM           repository.StaffManagementRepoInterface
 	EmailSvc         *email.SMTPService
 	OTPExpireMinutes int
 	SessionExpireHrs int
@@ -27,7 +28,7 @@ func Wiring(cfg WireConfig) *gin.Engine {
 }
 
 func wireAuth(router *gin.RouterGroup, cfg WireConfig) {
-	uc := usecase.NewUsecase(cfg.Repo, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
+	uc := usecase.NewUsecase(cfg.Repo, cfg.RepoSM, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
 	authMw := middleware.NewAuthMiddleware(uc)
 	authAdaptor := adaptor.NewAuthAdaptor(uc)
 
@@ -38,5 +39,6 @@ func wireAuth(router *gin.RouterGroup, cfg WireConfig) {
 		auth.POST("/check-email", authAdaptor.CheckEmail)
 		auth.POST("/reset-password", authAdaptor.ResetPassword)
 		auth.POST("/logout", authMw.Authenticate(), authAdaptor.Logout)
+
 	}
 }

@@ -10,8 +10,11 @@ import (
 type StaffManagementRepo struct {
 	db *gorm.DB
 }
+type StaffManagementRepoInterface interface {
+	CreateNewStaffManagement(ctx context.Context, user *entity.User) error
+}
 
-func NewStaffManagementRepo(db *gorm.DB) *StaffManagementRepo {
+func NewStaffManagementRepo(db *gorm.DB) StaffManagementRepoInterface {
 	return &StaffManagementRepo{
 		db: db,
 	}
