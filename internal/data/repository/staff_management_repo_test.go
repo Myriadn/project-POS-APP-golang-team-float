@@ -115,6 +115,50 @@ func (s *suiteStaffManagement) TestCreateNewStaffManagement() {
 	})
 }
 
+func (s *suiteStaffManagement) TestUpdateStaffManagement() {
+	id := 1
+
+	staffDummy := map[string]interface{}{
+		"Email":             "cakra@gmail.com",
+		"Username":          "Cakra",
+		"PasswordHash":      "halo123",
+		"FullName":          "Cakra Candra",
+		"Phone":             "123456781234",
+		"RoleID":            3,
+		"ProfilePicture":    "profile picture",
+		"Salary":            0,
+		"DateOfBirth":       nil,
+		"ShiftStart":        "09.00",
+		"ShiftEnd":          "16.00",
+		"Address":           "jalan buah",
+		"AdditionalDetails": "additional details",
+		"IsActive":          true,
+	}
+	//test ketika succsess
+	s.Run("success", func() {
+
+		s.mock.ExpectExec(regexp.QuoteMeta(`UPDATE "users"`)).
+			WillReturnResult(sqlmock.NewResult(0, 1))
+
+		err := s.repo.UpdateStaffManagement(context.Background(), id, staffDummy)
+
+		s.NoError(err)
+		s.NoError(s.mock.ExpectationsWereMet())
+	})
+	//test ketika gagal
+	s.Run("failed", func() {
+		id := 2
+
+		s.mock.ExpectExec(regexp.QuoteMeta(`UPDATE "users"`)).
+			WillReturnError(gorm.ErrRecordNotFound)
+
+		err := s.repo.UpdateStaffManagement(context.Background(), id, staffDummy)
+
+		s.Error(err)
+		s.NoError(s.mock.ExpectationsWereMet())
+	})
+}
+
 // fungsi untuk test semua fungsi testing yang di kumpulkan di suite
 func TestNewStaffManagement(t *testing.T) {
 	suite.Run(t, new(suiteStaffManagement))

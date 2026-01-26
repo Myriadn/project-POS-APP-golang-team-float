@@ -31,6 +31,7 @@ func wireAuth(router *gin.RouterGroup, cfg WireConfig) {
 	uc := usecase.NewUsecase(cfg.Repo, cfg.RepoSM, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
 	authMw := middleware.NewAuthMiddleware(uc)
 	authAdaptor := adaptor.NewAuthAdaptor(uc)
+	staffManagementAdaptor := adaptor.NewStaffManagementAdaptor(uc.StaffManagementUsecase)
 
 	auth := router.Group("/auth")
 	{
@@ -40,5 +41,9 @@ func wireAuth(router *gin.RouterGroup, cfg WireConfig) {
 		auth.POST("/reset-password", authAdaptor.ResetPassword)
 		auth.POST("/logout", authMw.Authenticate(), authAdaptor.Logout)
 
+	}
+	staffManagement := router.Group("/staff-management")
+	{
+		staffManagement.POST("/create", staffManagementAdaptor.CreateNewStaffManagement)
 	}
 }

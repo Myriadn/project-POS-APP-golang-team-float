@@ -65,6 +65,7 @@ func main() {
 
 	// Dependency Injection - Repository
 	repo := repository.NewRepository(db)
+	repoSM := repository.NewStaffManagementRepo(db)
 
 	// Email Service
 	emailSvc := email.NewSMTPService(email.SMTPConfig{
@@ -78,6 +79,7 @@ func main() {
 	// Wiring
 	router := wire.Wiring(wire.WireConfig{
 		Repo:             repo,
+		RepoSM:           repoSM,
 		EmailSvc:         emailSvc,
 		OTPExpireMinutes: cfg.OTP.ExpireMinutes,
 		SessionExpireHrs: cfg.Session.ExpireHours,
