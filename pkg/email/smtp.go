@@ -31,7 +31,7 @@ func (s *SMTPService) SendOTP(to, otp string) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", s.from)
 	m.SetHeader("To", to)
-	m.SetHeader("Subject", "COSYPOS - Your OTP Code")
+	m.SetHeader("Subject", "POS App - Your OTP Code")
 	m.SetBody("text/html", fmt.Sprintf(`
 		<h2>Your OTP Code</h2>
 		<p>Use this code to complete your authentication:</p>
@@ -47,7 +47,7 @@ func (s *SMTPService) SendPasswordResetOTP(to, otp string) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", s.from)
 	m.SetHeader("To", to)
-	m.SetHeader("Subject", "COSYPOS - Password Reset OTP")
+	m.SetHeader("Subject", "POS App - Password Reset OTP")
 	m.SetBody("text/html", fmt.Sprintf(`
 		<h2>Password Reset Request</h2>
 		<p>Use this code to reset your password:</p>

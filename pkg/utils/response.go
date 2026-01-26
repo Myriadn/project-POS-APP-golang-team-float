@@ -65,3 +65,21 @@ func ValidationError(c *gin.Context, errors any) {
 		Error:   errors,
 	})
 }
+
+// SuccessResponse sends a successful JSON response with custom status code
+func SuccessResponse(c *gin.Context, statusCode int, message string, data any) {
+	c.JSON(statusCode, Response{
+		Success: true,
+		Message: message,
+		Data:    data,
+	})
+}
+
+// ErrorResponse sends an error JSON response with custom status code
+func ErrorResponse(c *gin.Context, statusCode int, message string, err any) {
+	c.JSON(statusCode, Response{
+		Success: false,
+		Message: message,
+		Error:   err,
+	})
+}

@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 
 	"project-POS-APP-golang-team-float/internal/data/entity"
@@ -12,6 +14,7 @@ type RepositoryInterface interface {
 	SessionRepository
 	OTPRepository
 	RoleRepository
+	DashboardRepository
 }
 
 // UserRepository defines user-related database operations
@@ -49,6 +52,15 @@ type RoleRepository interface {
 	CreateRole(role *entity.Role) error
 	UpdateRole(role *entity.Role) error
 	DeleteRole(id uint) error
+}
+
+// DashboardRepository defines dashboard-related database operations
+type DashboardRepository interface {
+	GetDailySalesStats(date time.Time) (*DashboardStats, error)
+	GetMonthlySalesStats(year, month int) (*DashboardStats, error)
+	GetTableStats() (*TableStats, error)
+	GetPopularProducts(limit int) ([]PopularProduct, error)
+	GetNewProducts(limit int) ([]entity.Product, error)
 }
 
 // Ensure Repository implements RepositoryInterface

@@ -1,3 +1,4 @@
 assignment
 .env
 coverage.out
+*.exe

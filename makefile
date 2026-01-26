@@ -2,7 +2,7 @@ run:
 	go run main.go
 
 build:
-	go build -o cosypos.exe main.go
+	go build -o posapp.exe main.go
 
 tidy:
 	go mod tidy
