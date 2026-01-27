@@ -74,3 +74,21 @@ func (a *StaffManagementAdaptor) GetDetailStaffManagement(c *gin.Context) {
 	}
 	utils.SuccessResponse(c, 200, message.Message, user)
 }
+
+func (a *StaffManagementAdaptor) DeleteStaffManagement(c *gin.Context) {
+	ctx := c.Request.Context()
+	idString := c.Param("id")
+	idInt, err := strconv.Atoi(idString)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "ID harus berupa angka"})
+		return
+	}
+	id := uint(idInt)
+	result, err := a.StaffManagementUsecase.DeleteStaffManagementUsecase(ctx, id)
+	if err != nil {
+		utils.BadRequest(c, err.Error(), nil)
+		return
+	}
+
+	utils.Success(c, result.Message, nil)
+}

@@ -58,3 +58,12 @@ func (b *StaffManagementRepo) DeleteStaffManagement(ctx context.Context, id uint
 	}
 	return nil
 }
+
+func (b *StaffManagementRepo) GetAllStaffManagement(ctx context.Context) ([]*entity.User, error) {
+	var user []*entity.User
+	result := b.db.WithContext(ctx).Preload("Role").Find(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return user, nil
+}

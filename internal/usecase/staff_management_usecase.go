@@ -16,6 +16,7 @@ type StaffManagementUsecaseInterface interface {
 	CreateNewStaffManagementUsecase(ctx context.Context, req dto.CreateNewStaffManagementReq) (*dto.MessageResponse, error)
 	UpdateStaffManagementUsecase(ctx context.Context, id uint, req dto.UpdateStaffManagementReq) (*dto.MessageResponse, error)
 	GetDetailStaffManagement(ctx context.Context, id uint) (*dto.DetailStaffResponse, *dto.MessageResponse, error)
+	DeleteStaffManagementUsecase(ctx context.Context, id uint) (*dto.MessageResponse, error)
 }
 
 func NewStaffManagementUsecase(repo repository.StaffManagementRepoInterface) StaffManagementUsecaseInterface {
@@ -133,4 +134,14 @@ func (b *StaffManagementUsecase) GetDetailStaffManagement(ctx context.Context, i
 		ProfilePicture: userEntity.ProfilePicture,
 	}
 	return resp, &dto.MessageResponse{Message: "berhasil mengambil detail staff"}, nil
+}
+
+func (b *StaffManagementUsecase) DeleteStaffManagementUsecase(ctx context.Context, id uint) (*dto.MessageResponse, error) {
+
+	err := b.repo.DeleteStaffManagement(ctx, uint(id))
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.MessageResponse{Message: "Berhasil delete data staff"}, nil
 }

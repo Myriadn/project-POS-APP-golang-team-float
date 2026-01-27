@@ -70,7 +70,8 @@ func wireStaffManagement(router *gin.RouterGroup, uc *usecase.Usecase, authMw *m
 	// staffManagement.Use(authMw.Authenticate())
 	{
 		staffManagement.POST("/create", staffManagementAdaptor.CreateNewStaffManagement)
-		staffManagement.POST("/update/:id", staffManagementAdaptor.UpdateStaffManagement)
+		staffManagement.PATCH("/update/:id", staffManagementAdaptor.UpdateStaffManagement)
 		staffManagement.GET("/:id", staffManagementAdaptor.GetDetailStaffManagement)
+		staffManagement.DELETE("/delete/:id", staffManagementAdaptor.DeleteStaffManagement)
 	}
 }
