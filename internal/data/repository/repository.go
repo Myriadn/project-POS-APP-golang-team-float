@@ -111,16 +111,6 @@ func (r *Repository) InvalidatePreviousOTPs(userID uint, otpType string) error {
 		Update("is_used", true).Error
 }
 
-// Role Repository Methods
-func (r *Repository) FindRoleByName(name string) (*entity.Role, error) {
-	var role entity.Role
-	err := r.db.Where("name = ?", name).First(&role).Error
-	if err != nil {
-		return nil, err
-	}
-	return &role, nil
-}
-
 // pengecekan permission berdarsarkan id dan code nya
 func (r *Repository) Allowed(userID uint, code string) (bool, error) {
 	var exists bool

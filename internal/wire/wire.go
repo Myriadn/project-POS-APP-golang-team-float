@@ -45,5 +45,6 @@ func wireAuth(router *gin.RouterGroup, cfg WireConfig) {
 	staffManagement := router.Group("/staff-management")
 	{
 		staffManagement.POST("/create", staffManagementAdaptor.CreateNewStaffManagement)
+		staffManagement.POST("/update/:id", staffManagementAdaptor.UpdateStaffManagement)
 	}
 }

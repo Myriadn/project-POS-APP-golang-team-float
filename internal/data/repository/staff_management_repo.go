@@ -13,6 +13,7 @@ type StaffManagementRepo struct {
 type StaffManagementRepoInterface interface {
 	CreateNewStaffManagement(ctx context.Context, user *entity.User) error
 	UpdateStaffManagement(ctx context.Context, id uint, data map[string]interface{}) error
+	GetDetailStaffManagement(ctx context.Context, id uint) (*entity.User, error)
 }
 
 func NewStaffManagementRepo(db *gorm.DB) StaffManagementRepoInterface {
@@ -34,4 +35,13 @@ func (b *StaffManagementRepo) UpdateStaffManagement(ctx context.Context, id uint
 		return result.Error
 	}
 	return nil
+}
+
+func (b *StaffManagementRepo) GetDetailStaffManagement(ctx context.Context, id uint) (*entity.User, error) {
+	var user entity.User
+	result := b.db.WithContext(ctx).First(&user, id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &user, nil
 }

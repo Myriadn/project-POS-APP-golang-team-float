@@ -6,6 +6,7 @@ import (
 	"project-POS-APP-golang-team-float/internal/data/entity"
 	"regexp"
 	"testing"
+	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
@@ -155,6 +156,51 @@ func (s *suiteStaffManagement) TestUpdateStaffManagement() {
 		err := s.repo.UpdateStaffManagement(context.Background(), id, staffDummy)
 
 		s.Error(err)
+		s.NoError(s.mock.ExpectationsWereMet())
+	})
+}
+
+func (s *suiteStaffManagement) TestGetDetailStaffManagement() {
+
+	s.Run("success", func() {
+		id := 1
+		now := time.Now()
+		shiftStart := time.Date(2024, 1, 1, 9, 0, 0, 0, time.UTC) // Jam 09.00
+		shiftEnd := time.Date(2024, 1, 1, 16, 0, 0, 0, time.UTC)  // Jam 16.00
+		DateOfBirth := time.Date(2024, 1, 1, 16, 0, 0, 0, time.UTC)
+		// Data Dummy
+		rows := sqlmock.NewRows([]string{
+			"id", "email", "username", "password_hash", "full_name", "phone", "role_id", "profile_picture", "salary", "date_of_birth", "shift_start", "shift_end",
+			"address", "additional_details", "is_active", "created_at", "updated_at", "deleted_at",
+		}).AddRow(id, "cakra@gmail.com", "Cakra", "halo123", "Cakra Candra", "123456781234", 3, "profile picture", 0, DateOfBirth, shiftStart, shiftEnd, "jalan buah", "additional details", true, now, now, nil)
+
+		//menggunakan regexp.QuoteMeta untuk membaca *
+		s.mock.ExpectQuery(`FROM "users"`).WithArgs(id).
+			WillReturnRows(rows)
+
+		user, err := s.repo.GetDetailStaffManagement(context.Background(), uint(id))
+
+		//lakukan validasi
+		s.NoError(err)
+		s.NotNil(user)
+		s.Equal(uint(id), user.ID)
+		s.Equal("cakra@gmail.com", user.Email)
+		s.Equal("Cakra", user.Username)
+
+		// Cek apakah semua urutan mock terpenuhi
+		s.NoError(s.mock.ExpectationsWereMet())
+	})
+
+	s.Run("not_found", func() {
+		id := 2
+		s.mock.ExpectQuery(`FROM "users"`).WithArgs(id, sqlmock.AnyArg()).
+			WillReturnError(gorm.ErrRecordNotFound)
+
+		user, err := s.repo.GetDetailStaffManagement(context.Background(), uint(id))
+
+		s.Error(err)
+		s.Nil(user)
+
 		s.NoError(s.mock.ExpectationsWereMet())
 	})
 }
