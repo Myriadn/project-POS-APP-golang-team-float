@@ -7,13 +7,13 @@ import (
 )
 
 type Response struct {
-	Success bool        `json:"success"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data,omitempty"`
-	Error   interface{} `json:"error,omitempty"`
+	Success bool   `json:"success"`
+	Message string `json:"message"`
+	Data    any    `json:"data,omitempty"`
+	Error   any    `json:"error,omitempty"`
 }
 
-func Success(c *gin.Context, message string, data interface{}) {
+func Success(c *gin.Context, message string, data any) {
 	c.JSON(http.StatusOK, Response{
 		Success: true,
 		Message: message,
@@ -21,7 +21,7 @@ func Success(c *gin.Context, message string, data interface{}) {
 	})
 }
 
-func Created(c *gin.Context, message string, data interface{}) {
+func Created(c *gin.Context, message string, data any) {
 	c.JSON(http.StatusCreated, Response{
 		Success: true,
 		Message: message,
@@ -29,7 +29,7 @@ func Created(c *gin.Context, message string, data interface{}) {
 	})
 }
 
-func BadRequest(c *gin.Context, message string, err interface{}) {
+func BadRequest(c *gin.Context, message string, err any) {
 	c.JSON(http.StatusBadRequest, Response{
 		Success: false,
 		Message: message,
@@ -58,10 +58,28 @@ func InternalError(c *gin.Context, message string) {
 	})
 }
 
-func ValidationError(c *gin.Context, errors interface{}) {
+func ValidationError(c *gin.Context, errors any) {
 	c.JSON(http.StatusUnprocessableEntity, Response{
 		Success: false,
 		Message: "Validation failed",
 		Error:   errors,
+	})
+}
+
+// SuccessResponse sends a successful JSON response with custom status code
+func SuccessResponse(c *gin.Context, statusCode int, message string, data any) {
+	c.JSON(statusCode, Response{
+		Success: true,
+		Message: message,
+		Data:    data,
+	})
+}
+
+// ErrorResponse sends an error JSON response with custom status code
+func ErrorResponse(c *gin.Context, statusCode int, message string, err any) {
+	c.JSON(statusCode, Response{
+		Success: false,
+		Message: message,
+		Error:   err,
 	})
 }

@@ -21,14 +21,17 @@ func Wiring(cfg WireConfig) *gin.Engine {
 	router := gin.Default()
 	api := router.Group("/api")
 
-	wireAuth(api, cfg)
+	// Create shared usecase and middleware
+	uc := usecase.NewUsecase(cfg.Repo, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
+	authMw := middleware.NewAuthMiddleware(uc)
+
+	wireAuth(api, uc, authMw)
+	wireDashboard(api, uc, authMw)
 
 	return router
 }
 
-func wireAuth(router *gin.RouterGroup, cfg WireConfig) {
-	uc := usecase.NewUsecase(cfg.Repo, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
-	authMw := middleware.NewAuthMiddleware(uc)
+func wireAuth(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
 	authAdaptor := adaptor.NewAuthAdaptor(uc)
 
 	auth := router.Group("/auth")
@@ -38,5 +41,20 @@ func wireAuth(router *gin.RouterGroup, cfg WireConfig) {
 		auth.POST("/check-email", authAdaptor.CheckEmail)
 		auth.POST("/reset-password", authAdaptor.ResetPassword)
 		auth.POST("/logout", authMw.Authenticate(), authAdaptor.Logout)
+	}
+}
+
+func wireDashboard(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
+	dashboardAdaptor := adaptor.NewDashboardAdaptor(uc)
+
+	dashboard := router.Group("/dashboard")
+	dashboard.Use(authMw.Authenticate())
+	{
+		dashboard.GET("", dashboardAdaptor.GetDashboardSummary)
+		dashboard.GET("/daily-sales", dashboardAdaptor.GetDailySales)
+		dashboard.GET("/monthly-sales", dashboardAdaptor.GetMonthlySales)
+		dashboard.GET("/tables", dashboardAdaptor.GetTableSummary)
+		dashboard.GET("/popular-products", dashboardAdaptor.GetPopularProducts)
+		dashboard.GET("/new-products", dashboardAdaptor.GetNewProducts)
 	}
 }

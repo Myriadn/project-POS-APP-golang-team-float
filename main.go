@@ -3,7 +3,6 @@ package main
 import (
 	"project-POS-APP-golang-team-float/cmd"
 	"project-POS-APP-golang-team-float/internal/data"
-	"project-POS-APP-golang-team-float/internal/data/entity"
 	"project-POS-APP-golang-team-float/internal/data/repository"
 	"project-POS-APP-golang-team-float/internal/wire"
 	"project-POS-APP-golang-team-float/pkg/database"
@@ -27,7 +26,7 @@ func main() {
 	}
 	defer logger.Sync()
 
-	logger.Info("Starting COSYPOS API Server", zap.String("env", cfg.App.Env))
+	logger.Info("Starting POS App Server", zap.String("env", cfg.App.Env))
 
 	// Init Database
 	db, err := database.Connect(database.Config{
@@ -44,18 +43,10 @@ func main() {
 	logger.Info("Database connected")
 
 	// AutoMigrate
-	if err := db.AutoMigrate(
-		&entity.Role{},
-		&entity.User{},
-		&entity.OTPCode{},
-		&entity.Session{},
-		&entity.Category{},
-		&entity.Table{},
-		&entity.PaymentMethod{},
-	); err != nil {
+	if err := data.Migrate(db); err != nil {
 		logger.Fatal("Failed to migrate database", zap.Error(err))
 	}
-	logger.Info("Database migrated")
+	logger.Info("Database migrated and triggers set")
 
 	// Seed Data
 	if err := data.Seed(db); err != nil {
