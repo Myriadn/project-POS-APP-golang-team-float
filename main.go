@@ -27,7 +27,7 @@ func main() {
 	}
 	defer logger.Sync()
 
-	logger.Info("Starting COSYPOS API Server", zap.String("env", cfg.App.Env))
+	logger.Info("Starting POS App Server", zap.String("env", cfg.App.Env))
 
 	// Init Database
 	db, err := database.Connect(database.Config{
@@ -57,7 +57,7 @@ func main() {
 	); err != nil {
 		logger.Fatal("Failed to migrate database", zap.Error(err))
 	}
-	logger.Info("Database migrated")
+	logger.Info("Database migrated and triggers set")
 
 	// Seed Data
 	if err := data.Seed(db); err != nil {

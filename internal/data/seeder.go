@@ -125,7 +125,7 @@ func seedTables(db *gorm.DB) error {
 
 func seedSuperAdmin(db *gorm.DB) error {
 	var existingUser entity.User
-	if db.Where("email = ?", "superadmin@cosypos.com").First(&existingUser).RowsAffected > 0 {
+	if db.Where("email = ?", "superadmin@posapp.com").First(&existingUser).RowsAffected > 0 {
 		return nil
 	}
 
@@ -140,7 +140,7 @@ func seedSuperAdmin(db *gorm.DB) error {
 	}
 
 	user := &entity.User{
-		Email:        "superadmin@cosypos.com",
+		Email:        "superadmin@posapp.com",
 		Username:     "superadmin",
 		PasswordHash: passwordHash,
 		FullName:     "Super Administrator",

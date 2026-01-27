@@ -1,5 +1,5 @@
 -- =====================================================
--- COSYPOS - Point of Sales Application Database Schema
+-- Point of Sales Application Database Schema
 -- PostgreSQL Database Initialization Script
 -- =====================================================
 
@@ -468,7 +468,7 @@ CREATE TRIGGER update_admin_permissions_updated_at
 --     shift_end,
 --     is_active
 -- ) VALUES (
---     'superadmin@cosypos.com',
+--     'superadmin@posapp.com',
 --     'superadmin',
 --     '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', -- password: password (change this!)
 --     'Super Administrator',

@@ -4,6 +4,7 @@ import (
 	"project-POS-APP-golang-team-float/internal/data/repository"
 )
 
+// Usecase handles business logic for the application
 type Usecase struct {
 	repo                   *repository.Repository
 	StaffManagementUsecase StaffManagementUsecaseInterface
@@ -25,4 +26,8 @@ func NewUsecase(repo *repository.Repository, repoSM repository.StaffManagementRe
 		sessionExpireHrs:       sessionExpireHrs,
 		StaffManagementUsecase: NewStaffManagementUsecase(repoSM),
 	}
+}
+
+func (u *Usecase) GetRepository() repository.RepositoryInterface {
+	return u.repo
 }

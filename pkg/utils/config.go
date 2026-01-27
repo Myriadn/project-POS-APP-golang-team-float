@@ -64,7 +64,7 @@ func LoadConfig() (*Config, error) {
 			Port:     getEnv("DB_PORT", "5432"),
 			User:     getEnv("DB_USER", "postgres"),
 			Password: getEnv("DB_PASSWORD", ""),
-			Name:     getEnv("DB_NAME", "cosypos"),
+			Name:     getEnv("DB_NAME", "db_posapp"),
 			SSLMode:  getEnv("DB_SSLMODE", "disable"),
 		},
 		SMTP: SMTPConfig{
@@ -72,7 +72,7 @@ func LoadConfig() (*Config, error) {
 			Port:     smtpPort,
 			User:     getEnv("SMTP_USER", ""),
 			Password: getEnv("SMTP_PASSWORD", ""),
-			From:     getEnv("SMTP_FROM", "noreply@cosypos.com"),
+			From:     getEnv("SMTP_FROM", "noreply@posapp.com"),
 		},
 		OTP: OTPConfig{
 			ExpireMinutes: otpExpire,
