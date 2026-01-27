@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"project-POS-APP-golang-team-float/internal/data/entity"
+	"project-POS-APP-golang-team-float/internal/dto"
 )
 
 type MockStaffRepo struct {
@@ -10,6 +11,7 @@ type MockStaffRepo struct {
 	UpdateFn    func(ctx context.Context, id uint, data map[string]interface{}) error
 	GetDetailFn func(ctx context.Context, id uint) (*entity.User, error)
 	DeleteFn    func(ctx context.Context, id uint) error
+	GetAllFn    func(ctx context.Context, f dto.GetStaffManagementFilterRequest) ([]*entity.User, int64, error)
 }
 
 func (m *MockStaffRepo) CreateNewStaffManagement(ctx context.Context, user *entity.User) error {
@@ -25,4 +27,8 @@ func (m *MockStaffRepo) GetDetailStaffManagement(ctx context.Context, id uint) (
 
 func (m *MockStaffRepo) DeleteStaffManagement(ctx context.Context, id uint) error {
 	return m.DeleteFn(ctx, id)
+}
+
+func (m *MockStaffRepo) GetAllStaffManagement(ctx context.Context, f dto.GetStaffManagementFilterRequest) ([]*entity.User, int64, error) {
+	return m.GetAllFn(ctx, f)
 }

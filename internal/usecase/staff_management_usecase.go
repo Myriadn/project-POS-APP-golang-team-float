@@ -2,10 +2,13 @@ package usecase
 
 import (
 	"context"
+	"math"
 	"project-POS-APP-golang-team-float/internal/data/entity"
 	"project-POS-APP-golang-team-float/internal/data/repository"
 	"project-POS-APP-golang-team-float/internal/dto"
 	"project-POS-APP-golang-team-float/pkg/utils"
+	"strconv"
+	"time"
 )
 
 type StaffManagementUsecase struct {
@@ -17,6 +20,7 @@ type StaffManagementUsecaseInterface interface {
 	UpdateStaffManagementUsecase(ctx context.Context, id uint, req dto.UpdateStaffManagementReq) (*dto.MessageResponse, error)
 	GetDetailStaffManagement(ctx context.Context, id uint) (*dto.DetailStaffResponse, *dto.MessageResponse, error)
 	DeleteStaffManagementUsecase(ctx context.Context, id uint) (*dto.MessageResponse, error)
+	GetAllStaffManagement(ctx context.Context, req dto.GetStaffManagementFilterRequest) ([]*dto.GetlAllStaffResponse, dto.Pagination, error)
 }
 
 func NewStaffManagementUsecase(repo repository.StaffManagementRepoInterface) StaffManagementUsecaseInterface {
@@ -144,4 +148,43 @@ func (b *StaffManagementUsecase) DeleteStaffManagementUsecase(ctx context.Contex
 	}
 
 	return &dto.MessageResponse{Message: "Berhasil delete data staff"}, nil
+}
+
+func (b *StaffManagementUsecase) GetAllStaffManagement(ctx context.Context, req dto.GetStaffManagementFilterRequest) ([]*dto.GetlAllStaffResponse, dto.Pagination, error) {
+	if req.Page == 0 {
+		req.Page = 1
+	}
+	if req.Limit == 0 {
+		req.Limit = 10
+	}
+
+	user, total, err := b.repo.GetAllStaffManagement(ctx, req)
+	if err != nil {
+		return nil, dto.Pagination{}, err
+	}
+
+	var staffResponse []*dto.GetlAllStaffResponse
+	now := time.Now()
+	for _, t := range user {
+		row := dto.GetlAllStaffResponse{
+			ID:       t.ID,
+			Email:    t.Email,
+			FullName: t.FullName,
+			Phone:    t.Phone,
+			RoleName: t.Role.Name,
+			Salary:   t.Salary,
+			Age:      strconv.Itoa(now.Year()-t.DateOfBirth.Year()) + "yr",
+			Timing:   t.ShiftStart + "to" + t.ShiftEnd,
+		}
+		staffResponse = append(staffResponse, &row)
+	}
+	totalPages := int(math.Ceil(float64(total) / float64(req.Limit)))
+
+	pagination := dto.Pagination{
+		CurrentPage:  req.Page,
+		Limit:        req.Limit,
+		TotalPages:   totalPages,
+		TotalRecords: total,
+	}
+	return staffResponse, pagination, nil
 }

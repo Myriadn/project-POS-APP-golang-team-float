@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"net/http"
 	"slices"
 	"strings"
 
@@ -8,6 +9,8 @@ import (
 	"github.com/google/uuid"
 
 	"project-POS-APP-golang-team-float/internal/data/entity"
+	"project-POS-APP-golang-team-float/internal/data/repository"
+	"project-POS-APP-golang-team-float/internal/usecase"
 	"project-POS-APP-golang-team-float/pkg/utils"
 )
 
@@ -17,10 +20,12 @@ type SessionValidator interface {
 
 type AuthMiddleware struct {
 	validator SessionValidator
+	uc *usecase.Usecase
 }
 
-func NewAuthMiddleware(validator SessionValidator) *AuthMiddleware {
-	return &AuthMiddleware{validator: validator}
+func NewAuthMiddleware(validator SessionValidator, uc *usecase.Usecase) *AuthMiddleware {
+	return &AuthMiddleware{validator: validator,
+	uc:uc}
 }
 
 func (m *AuthMiddleware) Authenticate() gin.HandlerFunc {
@@ -82,29 +87,30 @@ func (m *AuthMiddleware) RequireRole(roles ...string) gin.HandlerFunc {
 }
 
 // //untuk melihat apakah di izinkan atau tidak
-// func (m *AuthMiddleware) RequirePermission(code string) gin.HandlerFunc {
-// 	return func(c *gin.Context) {
-// 		sessionIDStr, err := c.Cookie("session")
-// 		if err != nil {
-// 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized: session cookie missing"})
-// 			return
-// 		}
+func (m *AuthMiddleware) RequirePermission(code string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		sessionIDStr, err := c.Cookie("session")
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized: session cookie missing"})
+			return
+		}
 
-// 		userID, err := m.Service.SessionService.GetUserIDBySession(sessionID)
-// 		if err != nil {
-// 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "internal error or invalid session"})
-// 			return
-// 		}
+		userID, err := //ambil logic user id bersarsarkan di sini
+		
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "internal error or invalid session"})
+			return
+		}
 
-// 		allowed, err := m.Service.Permission.Allowed(userID, code)
-// 		if err != nil {
-// 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "internal error checking permission"})
-// 			return
-// 		}
-// 		if !allowed {
-// 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "forbidden"})
-// 			return
-// 		}
-// 		c.Next()
-// 	}
-// }
+		allowed, err := m.uc.Allowed(userID,code)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "internal error checking permission"})
+			return
+		}
+		if !allowed {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "forbidden"})
+			return
+		}
+		c.Next()
+	}
+}

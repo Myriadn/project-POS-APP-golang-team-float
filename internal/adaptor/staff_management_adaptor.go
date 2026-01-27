@@ -92,3 +92,22 @@ func (a *StaffManagementAdaptor) DeleteStaffManagement(c *gin.Context) {
 
 	utils.Success(c, result.Message, nil)
 }
+
+func (a *StaffManagementAdaptor) GetAllStaffManagement(c *gin.Context) {
+	ctx := c.Request.Context()
+	sortBy := c.Query("sort_by")
+	req := dto.GetStaffManagementFilterRequest{
+		SortBy: sortBy,
+	}
+	if err := c.ShouldBindQuery(&req); err != nil {
+		utils.BadRequest(c, "Parameter salah", nil)
+		return
+	}
+	result, pagination, err := a.StaffManagementUsecase.GetAllStaffManagement(ctx, req)
+	if err != nil {
+		utils.BadRequest(c, err.Error(), nil)
+		return
+	}
+
+	utils.SuccessPaginationResponse(c, 200, "Berhasil mengambil daftar staff", result, &pagination)
+}
