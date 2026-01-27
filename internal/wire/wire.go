@@ -67,7 +67,7 @@ func wireStaffManagement(router *gin.RouterGroup, uc *usecase.Usecase, authMw *m
 	staffManagementAdaptor := adaptor.NewStaffManagementAdaptor(uc.StaffManagementUsecase)
 
 	staffManagement := router.Group("/staff-management")
-	// staffManagement.Use(authMw.Authenticate())
+	staffManagement.Use(authMw.Authenticate())
 	{
 		staffManagement.POST("/create", staffManagementAdaptor.CreateNewStaffManagement)
 		staffManagement.PATCH("/update/:id", staffManagementAdaptor.UpdateStaffManagement)
