@@ -173,3 +173,13 @@ func (u *Usecase) ValidateSession(token uuid.UUID) (*entity.User, error) {
 
 	return user, nil
 }
+
+// pengecekan izin
+func (u *Usecase) Allowed(userID uint, code string) (bool, error) {
+	allowed, err := u.repo.Allowed(userID, code)
+	if err != nil {
+		return false, err
+	}
+
+	return allowed, nil
+}

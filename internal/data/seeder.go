@@ -23,6 +23,12 @@ func Seed(db *gorm.DB) error {
 	if err := seedSuperAdmin(db); err != nil {
 		return err
 	}
+	if err := seedPermission(db); err != nil {
+		return err
+	}
+	if err := seedRolePermissions(db); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -146,4 +152,46 @@ func seedSuperAdmin(db *gorm.DB) error {
 	}
 
 	return db.Create(user).Error
+}
+
+// data dummy untuk permission
+func seedPermission(db *gorm.DB) error {
+	permissions := []entity.Permission{
+		{ID: 1, Code: "user:read", Description: "Melihat daftar dan detail user"},
+		{ID: 2, Code: "user:create", Description: "Menambahkan user baru"},
+		{ID: 3, Code: "user:update", Description: "Mengubah data user"},
+		{ID: 4, Code: "user:delete", Description: "Menghapus user (soft delete)"},
+	}
+	for _, permission := range permissions {
+		var existing entity.Permission
+		if db.Where("id = ?", permission.ID).First(&existing).RowsAffected == 0 {
+			if err := db.Create(&permission).Error; err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// data dummy untuk role permission
+func seedRolePermissions(db *gorm.DB) error {
+	RolePermissions := []entity.RolePermisson{
+		{RoleID: 1, PermissionID: 1},
+		{RoleID: 1, PermissionID: 2},
+		{RoleID: 1, PermissionID: 3},
+		{RoleID: 1, PermissionID: 4},
+		{RoleID: 2, PermissionID: 1},
+		{RoleID: 2, PermissionID: 2},
+		{RoleID: 2, PermissionID: 3},
+		{RoleID: 2, PermissionID: 4},
+	}
+	for _, RolePermission := range RolePermissions {
+		var existing entity.RolePermisson
+		if db.Where("role_id = ? AND permission_id =?", RolePermission.RoleID, RolePermission.PermissionID).First(&existing).RowsAffected == 0 {
+			if err := db.Create(&RolePermission).Error; err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }

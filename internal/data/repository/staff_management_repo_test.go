@@ -116,23 +116,23 @@ func (s *suiteStaffManagement) TestCreateNewStaffManagement() {
 }
 
 func (s *suiteStaffManagement) TestUpdateStaffManagement() {
-	id := 1
+	id := uint(1)
 
 	staffDummy := map[string]interface{}{
-		"Email":             "cakra@gmail.com",
-		"Username":          "Cakra",
-		"PasswordHash":      "halo123",
-		"FullName":          "Cakra Candra",
-		"Phone":             "123456781234",
-		"RoleID":            3,
-		"ProfilePicture":    "profile picture",
-		"Salary":            0,
-		"DateOfBirth":       nil,
-		"ShiftStart":        "09.00",
-		"ShiftEnd":          "16.00",
-		"Address":           "jalan buah",
-		"AdditionalDetails": "additional details",
-		"IsActive":          true,
+		"email":              "cakra@gmail.com",
+		"username":           "Cakra",
+		"password_hash":      "halo123",
+		"full_name":          "Cakra Candra",
+		"phone":              "123456781234",
+		"role_id":            3,
+		"profile_picture":    "profile picture",
+		"salary":             0,
+		"date_of_birth":      nil,
+		"shift_start":        "09.00",
+		"shift_end":          "16.00",
+		"address":            "jalan buah",
+		"additional_details": "additional details",
+		"is_active":          true,
 	}
 	//test ketika succsess
 	s.Run("success", func() {
@@ -147,7 +147,7 @@ func (s *suiteStaffManagement) TestUpdateStaffManagement() {
 	})
 	//test ketika gagal
 	s.Run("failed", func() {
-		id := 2
+		id := uint(2)
 
 		s.mock.ExpectExec(regexp.QuoteMeta(`UPDATE "users"`)).
 			WillReturnError(gorm.ErrRecordNotFound)

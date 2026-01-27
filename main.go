@@ -52,6 +52,8 @@ func main() {
 		&entity.Category{},
 		&entity.Table{},
 		&entity.PaymentMethod{},
+		&entity.Permission{},
+		&entity.RolePermisson{},
 	); err != nil {
 		logger.Fatal("Failed to migrate database", zap.Error(err))
 	}
