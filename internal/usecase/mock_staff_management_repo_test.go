@@ -9,6 +9,7 @@ type MockStaffRepo struct {
 	CreateFn    func(ctx context.Context, user *entity.User) error
 	UpdateFn    func(ctx context.Context, id uint, data map[string]interface{}) error
 	GetDetailFn func(ctx context.Context, id uint) (*entity.User, error)
+	DeleteFn    func(ctx context.Context, id uint) error
 }
 
 func (m *MockStaffRepo) CreateNewStaffManagement(ctx context.Context, user *entity.User) error {
@@ -20,4 +21,8 @@ func (m *MockStaffRepo) UpdateStaffManagement(ctx context.Context, id uint, data
 
 func (m *MockStaffRepo) GetDetailStaffManagement(ctx context.Context, id uint) (*entity.User, error) {
 	return m.GetDetailFn(ctx, id)
+}
+
+func (m *MockStaffRepo) DeleteStaffManagement(ctx context.Context, id uint) error {
+	return m.DeleteFn(ctx, id)
 }

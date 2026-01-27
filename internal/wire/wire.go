@@ -28,6 +28,7 @@ func Wiring(cfg WireConfig) *gin.Engine {
 
 	wireAuth(api, uc, authMw)
 	wireDashboard(api, uc, authMw)
+	wireStaffManagement(api, uc, authMw)
 
 	return router
 }
@@ -59,5 +60,17 @@ func wireDashboard(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middlew
 		dashboard.GET("/tables", dashboardAdaptor.GetTableSummary)
 		dashboard.GET("/popular-products", dashboardAdaptor.GetPopularProducts)
 		dashboard.GET("/new-products", dashboardAdaptor.GetNewProducts)
+	}
+}
+
+func wireStaffManagement(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
+	staffManagementAdaptor := adaptor.NewStaffManagementAdaptor(uc.StaffManagementUsecase)
+
+	staffManagement := router.Group("/staff-management")
+	// staffManagement.Use(authMw.Authenticate())
+	{
+		staffManagement.POST("/create", staffManagementAdaptor.CreateNewStaffManagement)
+		staffManagement.POST("/update/:id", staffManagementAdaptor.UpdateStaffManagement)
+		staffManagement.GET("/:id", staffManagementAdaptor.GetDetailStaffManagement)
 	}
 }

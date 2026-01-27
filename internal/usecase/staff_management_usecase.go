@@ -15,6 +15,7 @@ type StaffManagementUsecase struct {
 type StaffManagementUsecaseInterface interface {
 	CreateNewStaffManagementUsecase(ctx context.Context, req dto.CreateNewStaffManagementReq) (*dto.MessageResponse, error)
 	UpdateStaffManagementUsecase(ctx context.Context, id uint, req dto.UpdateStaffManagementReq) (*dto.MessageResponse, error)
+	GetDetailStaffManagement(ctx context.Context, id uint) (*dto.DetailStaffResponse, *dto.MessageResponse, error)
 }
 
 func NewStaffManagementUsecase(repo repository.StaffManagementRepoInterface) StaffManagementUsecaseInterface {
@@ -112,4 +113,24 @@ func (b *StaffManagementUsecase) UpdateStaffManagementUsecase(ctx context.Contex
 	}
 
 	return &dto.MessageResponse{Message: "Berhasil update data staff"}, nil
+}
+
+func (b *StaffManagementUsecase) GetDetailStaffManagement(ctx context.Context, id uint) (*dto.DetailStaffResponse, *dto.MessageResponse, error) {
+	userEntity, err := b.repo.GetDetailStaffManagement(ctx, id)
+	if err != nil {
+		return nil, nil, err
+	}
+	resp := &dto.DetailStaffResponse{
+		ID:             userEntity.ID,
+		Email:          userEntity.Email,
+		FullName:       userEntity.FullName,
+		Phone:          userEntity.Phone,
+		RoleName:       userEntity.Role.Name,
+		Salary:         userEntity.Salary,
+		ShiftStart:     userEntity.ShiftStart,
+		ShiftEnd:       userEntity.ShiftEnd,
+		Address:        userEntity.Address,
+		ProfilePicture: userEntity.ProfilePicture,
+	}
+	return resp, &dto.MessageResponse{Message: "berhasil mengambil detail staff"}, nil
 }

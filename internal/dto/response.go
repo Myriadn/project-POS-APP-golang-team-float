@@ -26,3 +26,16 @@ type UserResponse struct {
 	IsActive       bool      `json:"is_active"`
 	CreatedAt      time.Time `json:"created_at"`
 }
+type DetailStaffResponse struct {
+	ID             uint      `json:"id"`
+	Email          string    `json:"email"`
+	FullName       string    `json:"full_name"`
+	Phone          string    `json:"phone"`
+	RoleName       string    `json:"role_name"`
+	DateOfBirth    time.Time `json:"date_of_birth"`
+	Address        string    `json:"address"`
+	ProfilePicture string    `json:"profile_picture"`
+	Salary         float64   `json:"salary"`
+	ShiftStart     string    `json:"shift_start"`
+	ShiftEnd       string    `json:"shift_end"`
+}
