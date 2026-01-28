@@ -60,3 +60,10 @@ type GetStaffManagementFilterRequest struct {
 	Limit  int    `form:"limit"`
 	SortBy string `form:"sort_by"`
 }
+
+// request untuk membuat category menu
+type CreateNewCategoryMenuReq struct {
+	Name        string `json:"name" binding:"required,min=3,max=100"`
+	Description string `json:"description" binding:"required,min=3,max=255"`
+	Icon        string `json:"icon" binding:"required,min=3,max=500"`
+}

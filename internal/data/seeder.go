@@ -235,6 +235,7 @@ func seedPermission(db *gorm.DB) error {
 		{ID: 2, Code: "user:create", Description: "Menambahkan user baru"},
 		{ID: 3, Code: "user:update", Description: "Mengubah data user"},
 		{ID: 4, Code: "user:delete", Description: "Menghapus user (soft delete)"},
+		{ID: 5, Code: "category:create", Description: "Menambahkan category menu baru"},
 	}
 	for _, permission := range permissions {
 		var existing entity.Permission
@@ -363,6 +364,8 @@ func seedRolePermissions(db *gorm.DB) error {
 		{RoleID: 2, PermissionID: 2},
 		{RoleID: 2, PermissionID: 3},
 		{RoleID: 2, PermissionID: 4},
+		{RoleID: 1, PermissionID: 5},
+		{RoleID: 2, PermissionID: 5},
 	}
 	for _, RolePermission := range RolePermissions {
 		var existing entity.RolePermisson

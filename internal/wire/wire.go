@@ -13,6 +13,7 @@ import (
 type WireConfig struct {
 	Repo             *repository.Repository
 	RepoSM           repository.StaffManagementRepoInterface
+	Category         repository.CategoryMenuRepoInterface
 	EmailSvc         *email.SMTPService
 	OTPExpireMinutes int
 	SessionExpireHrs int
@@ -23,12 +24,13 @@ func Wiring(cfg WireConfig) *gin.Engine {
 	api := router.Group("/api")
 
 	// Create shared usecase and middleware
-	uc := usecase.NewUsecase(cfg.Repo, cfg.RepoSM, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
+	uc := usecase.NewUsecase(cfg.Repo, cfg.RepoSM, cfg.Category, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
 	authMw := middleware.NewAuthMiddleware(uc, uc) // uc 2 times because both implemented on middleware
 
 	wireAuth(api, uc, authMw)
 	wireDashboard(api, uc, authMw)
 	wireStaffManagement(api, uc, authMw)
+	wireCategoryMenu(api, uc, authMw)
 
 	return router
 }
@@ -76,5 +78,16 @@ func wireStaffManagement(router *gin.RouterGroup, uc *usecase.Usecase, authMw *m
 		staffManagement.GET("/:id", staffManagementAdaptor.GetDetailStaffManagement)
 		staffManagement.GET("", staffManagementAdaptor.GetAllStaffManagement)
 		staffManagement.DELETE("/delete/:id", staffManagementAdaptor.DeleteStaffManagement)
+	}
+}
+
+func wireCategoryMenu(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
+	CategoryMenuAdaptor := adaptor.NewCategoryMenuAdaptor(uc.CategoryMenuUsecase)
+
+	CategoryMenu := router.Group("/category-menu")
+	CategoryMenu.Use(authMw.Authenticate())
+	{
+		CategoryMenu.POST("/create", authMw.RequirePermission("category:create"), CategoryMenuAdaptor.CreateNewCategoryMenu)
+
 	}
 }
