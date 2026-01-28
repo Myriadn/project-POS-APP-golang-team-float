@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"project-POS-APP-golang-team-float/internal/data/entity"
+	"project-POS-APP-golang-team-float/internal/dto"
 
 	"gorm.io/gorm"
 )
@@ -14,6 +15,7 @@ type CategoryMenuRepoInterface interface {
 	CreateNewCategory(ctx context.Context, category *entity.Category) error
 	UpdateCategoryMenu(ctx context.Context, id uint, data map[string]interface{}) error
 	GetDetailCategoryMenu(ctx context.Context, id uint) (*entity.Category, error)
+	GetAllCategoryMenu(ctx context.Context, f dto.FilterRequest) ([]*entity.Category, int64, error)
 }
 
 func NewCategoryMenuRepo(db *gorm.DB) CategoryMenuRepoInterface {
@@ -48,4 +50,29 @@ func (b *CategoryMenuRepo) GetDetailCategoryMenu(ctx context.Context, id uint) (
 		return nil, result.Error
 	}
 	return &category, nil
+}
+
+// mendapatkan semua category
+func (b *CategoryMenuRepo) GetAllCategoryMenu(ctx context.Context, f dto.FilterRequest) ([]*entity.Category, int64, error) {
+	var category []*entity.Category
+	var totalItems int64
+
+	query := b.db.WithContext(ctx).Model(&entity.Category{})
+
+	if err := query.Count(&totalItems).Error; err != nil {
+		return nil, 0, err
+	}
+
+	offset := (f.Page - 1) * f.Limit
+
+	result := query.Preload("Products").
+		Limit(f.Limit).
+		Offset(offset).
+		Find(&category)
+
+	if result.Error != nil {
+		return nil, 0, result.Error
+	}
+
+	return category, totalItems, nil
 }

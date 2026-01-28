@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"math"
 	"project-POS-APP-golang-team-float/internal/data/entity"
 	"project-POS-APP-golang-team-float/internal/data/repository"
 	"project-POS-APP-golang-team-float/internal/dto"
@@ -15,6 +16,7 @@ type CategoryMenuUsecaseInterface interface {
 	CreateNewCategoryUsecase(ctx context.Context, req dto.CreateNewCategoryMenuReq) (*dto.MessageResponse, error)
 	UpdateCategoryMenuUsecase(ctx context.Context, id uint, req dto.UpdateCategoryMenuReq) (*dto.MessageResponse, error)
 	GetDetailCategoryMenu(ctx context.Context, id uint) (*dto.DetailCategoryResponse, *dto.MessageResponse, error)
+	GetAllCategoryMenu(ctx context.Context, req dto.FilterRequest) ([]*dto.AllCategoryMenuResponse, dto.Pagination, error)
 }
 
 func NewCategoryMenuUsecase(repo repository.CategoryMenuRepoInterface) CategoryMenuUsecaseInterface {
@@ -76,4 +78,38 @@ func (b *CategoryMenuUsecase) GetDetailCategoryMenu(ctx context.Context, id uint
 		Icon:        category.Icon,
 	}
 	return resp, &dto.MessageResponse{Message: "berhasil mengambil detail category menu"}, nil
+}
+
+func (b *CategoryMenuUsecase) GetAllCategoryMenu(ctx context.Context, req dto.FilterRequest) ([]*dto.AllCategoryMenuResponse, dto.Pagination, error) {
+	if req.Page == 0 {
+		req.Page = 1
+	}
+	if req.Limit == 0 {
+		req.Limit = 6
+	}
+
+	category, total, err := b.repo.GetAllCategoryMenu(ctx, req)
+	if err != nil {
+		return nil, dto.Pagination{}, err
+	}
+
+	var categoryResponse []*dto.AllCategoryMenuResponse
+	for _, t := range category {
+		row := dto.AllCategoryMenuResponse{
+			ID:         t.ID,
+			Name:       t.Name,
+			TotalItems: int64(len(t.Products)),
+			Icon:       t.Icon,
+		}
+		categoryResponse = append(categoryResponse, &row)
+	}
+	totalPages := int(math.Ceil(float64(total) / float64(req.Limit)))
+
+	pagination := dto.Pagination{
+		CurrentPage:  req.Page,
+		Limit:        req.Limit,
+		TotalPages:   totalPages,
+		TotalRecords: total,
+	}
+	return categoryResponse, pagination, nil
 }

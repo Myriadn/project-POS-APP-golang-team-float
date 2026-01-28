@@ -55,7 +55,7 @@ type UpdateStaffManagementReq struct {
 	AdditionalDetails string     `json:"additional_details" binding:"omitempty"`
 }
 
-type GetStaffManagementFilterRequest struct {
+type FilterRequest struct {
 	Page   int    `form:"page"`
 	Limit  int    `form:"limit"`
 	SortBy string `form:"sort_by"`

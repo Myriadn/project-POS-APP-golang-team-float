@@ -77,3 +77,25 @@ func (a *CategoryMenuAdaptor) GetDetailCategoryMenu(c *gin.Context) {
 	}
 	utils.SuccessResponse(c, 200, message.Message, user)
 }
+
+// mendapatkan  semua  category menu
+func (a *CategoryMenuAdaptor) GetAllCategoryMenu(c *gin.Context) {
+	ctx := c.Request.Context()
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
+	req := dto.FilterRequest{
+		Page:  page,
+		Limit: limit,
+	}
+	if err := c.ShouldBindQuery(&req); err != nil {
+		utils.BadRequest(c, "Parameter salah", nil)
+		return
+	}
+	result, pagination, err := a.CategoryMenuUsecase.GetAllCategoryMenu(ctx, req)
+	if err != nil {
+		utils.BadRequest(c, err.Error(), nil)
+		return
+	}
+
+	utils.SuccessPaginationResponse(c, 200, "Berhasil mengambil semua daftar category menu", result, &pagination)
+}

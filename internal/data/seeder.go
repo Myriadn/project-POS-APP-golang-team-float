@@ -60,7 +60,6 @@ func seedRoles(db *gorm.DB) error {
 
 func seedCategories(db *gorm.DB) error {
 	categories := []entity.Category{
-		{Name: "All", Description: "Semua kategori menu"},
 		{Name: "Pizza", Description: "Berbagai macam pizza", Icon: "/icons/pizza.png"},
 		{Name: "Burger", Description: "Burger dengan berbagai pilihan", Icon: "/icons/burger.png"},
 		{Name: "Chicken", Description: "Ayam goreng dan panggang", Icon: "/icons/chicken.png"},

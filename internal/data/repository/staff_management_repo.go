@@ -17,7 +17,7 @@ type StaffManagementRepoInterface interface {
 	UpdateStaffManagement(ctx context.Context, id uint, data map[string]interface{}) error
 	GetDetailStaffManagement(ctx context.Context, id uint) (*entity.User, error)
 	DeleteStaffManagement(ctx context.Context, id uint) error
-	GetAllStaffManagement(ctx context.Context, f dto.GetStaffManagementFilterRequest) ([]*entity.User, int64, error)
+	GetAllStaffManagement(ctx context.Context, f dto.FilterRequest) ([]*entity.User, int64, error)
 }
 
 func NewStaffManagementRepo(db *gorm.DB) StaffManagementRepoInterface {
@@ -67,7 +67,7 @@ func (b *StaffManagementRepo) DeleteStaffManagement(ctx context.Context, id uint
 }
 
 // mendapatkan daftar data staff
-func (b *StaffManagementRepo) GetAllStaffManagement(ctx context.Context, f dto.GetStaffManagementFilterRequest) ([]*entity.User, int64, error) {
+func (b *StaffManagementRepo) GetAllStaffManagement(ctx context.Context, f dto.FilterRequest) ([]*entity.User, int64, error) {
 	var users []*entity.User
 	var totalItems int64
 
