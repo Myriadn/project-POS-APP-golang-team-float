@@ -2,6 +2,7 @@ package utils
 
 import (
 	"net/http"
+	"project-POS-APP-golang-team-float/internal/dto"
 
 	"github.com/gin-gonic/gin"
 )
@@ -81,5 +82,17 @@ func ErrorResponse(c *gin.Context, statusCode int, message string, err any) {
 		Success: false,
 		Message: message,
 		Error:   err,
+	})
+}
+
+// response pagination
+func SuccessPaginationResponse(c *gin.Context, statusCode int, message string, items any, meta *dto.Pagination) {
+	c.JSON(statusCode, Response{
+		Success: true,
+		Message: message,
+		Data: dto.PaginationData{
+			Items: items,
+			Meta:  meta,
+		},
 	})
 }

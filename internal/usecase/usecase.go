@@ -6,10 +6,11 @@ import (
 
 // Usecase handles business logic for the application
 type Usecase struct {
-	repo             repository.RepositoryInterface
-	emailSvc         EmailService
-	otpExpireMinutes int
-	sessionExpireHrs int
+	repo                   *repository.Repository
+	StaffManagementUsecase StaffManagementUsecaseInterface
+	emailSvc               EmailService
+	otpExpireMinutes       int
+	sessionExpireHrs       int
 }
 
 type EmailService interface {
@@ -17,12 +18,13 @@ type EmailService interface {
 	SendPasswordResetOTP(to, otp string) error
 }
 
-func NewUsecase(repo repository.RepositoryInterface, emailSvc EmailService, otpExpireMinutes, sessionExpireHrs int) *Usecase {
+func NewUsecase(repo *repository.Repository, repoSM repository.StaffManagementRepoInterface, emailSvc EmailService, otpExpireMinutes, sessionExpireHrs int) *Usecase {
 	return &Usecase{
-		repo:             repo,
-		emailSvc:         emailSvc,
-		otpExpireMinutes: otpExpireMinutes,
-		sessionExpireHrs: sessionExpireHrs,
+		repo:                   repo,
+		emailSvc:               emailSvc,
+		otpExpireMinutes:       otpExpireMinutes,
+		sessionExpireHrs:       sessionExpireHrs,
+		StaffManagementUsecase: NewStaffManagementUsecase(repoSM),
 	}
 }
 

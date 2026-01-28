@@ -26,3 +26,41 @@ type UserResponse struct {
 	IsActive       bool      `json:"is_active"`
 	CreatedAt      time.Time `json:"created_at"`
 }
+type DetailStaffResponse struct {
+	ID             uint      `json:"id"`
+	Email          string    `json:"email"`
+	FullName       string    `json:"full_name"`
+	Phone          string    `json:"phone"`
+	RoleName       string    `json:"role_name"`
+	DateOfBirth    time.Time `json:"date_of_birth"`
+	Address        string    `json:"address"`
+	ProfilePicture string    `json:"profile_picture"`
+	Salary         float64   `json:"salary"`
+	ShiftStart     string    `json:"shift_start"`
+	ShiftEnd       string    `json:"shift_end"`
+}
+
+// pagination
+type Pagination struct {
+	CurrentPage  int   `json:"current_page"`
+	Limit        int   `json:"limit"`
+	TotalPages   int   `json:"total_pages"`
+	TotalRecords int64 `json:"total_records"`
+}
+
+type GetlAllStaffResponse struct {
+	ID       uint    `json:"id"`
+	Email    string  `json:"email"`
+	FullName string  `json:"full_name"`
+	Phone    string  `json:"phone"`
+	RoleName string  `json:"role_name"`
+	Age      string  `json:"age"`
+	Timing   string  `json:"timing"`
+	Salary   float64 `json:"salary"`
+}
+
+// Struct Wrapper agar data & meta terbungkus rapi
+type PaginationData struct {
+	Items any         `json:"items"`
+	Meta  *Pagination `json:"meta"`
+}

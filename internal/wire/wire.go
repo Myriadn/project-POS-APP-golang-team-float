@@ -12,6 +12,7 @@ import (
 
 type WireConfig struct {
 	Repo             *repository.Repository
+	RepoSM           repository.StaffManagementRepoInterface
 	EmailSvc         *email.SMTPService
 	OTPExpireMinutes int
 	SessionExpireHrs int
@@ -22,11 +23,12 @@ func Wiring(cfg WireConfig) *gin.Engine {
 	api := router.Group("/api")
 
 	// Create shared usecase and middleware
-	uc := usecase.NewUsecase(cfg.Repo, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
+	uc := usecase.NewUsecase(cfg.Repo, cfg.RepoSM, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
 	authMw := middleware.NewAuthMiddleware(uc)
 
 	wireAuth(api, uc, authMw)
 	wireDashboard(api, uc, authMw)
+	wireStaffManagement(api, uc, authMw)
 
 	return router
 }
@@ -41,7 +43,9 @@ func wireAuth(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.A
 		auth.POST("/check-email", authAdaptor.CheckEmail)
 		auth.POST("/reset-password", authAdaptor.ResetPassword)
 		auth.POST("/logout", authMw.Authenticate(), authAdaptor.Logout)
+
 	}
+
 }
 
 func wireDashboard(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
@@ -56,5 +60,19 @@ func wireDashboard(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middlew
 		dashboard.GET("/tables", dashboardAdaptor.GetTableSummary)
 		dashboard.GET("/popular-products", dashboardAdaptor.GetPopularProducts)
 		dashboard.GET("/new-products", dashboardAdaptor.GetNewProducts)
+	}
+}
+
+func wireStaffManagement(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
+	staffManagementAdaptor := adaptor.NewStaffManagementAdaptor(uc.StaffManagementUsecase)
+
+	staffManagement := router.Group("/staff-management")
+	staffManagement.Use(authMw.Authenticate())
+	{
+		staffManagement.POST("/create", staffManagementAdaptor.CreateNewStaffManagement)
+		staffManagement.PATCH("/update/:id", staffManagementAdaptor.UpdateStaffManagement)
+		staffManagement.GET("/:id", staffManagementAdaptor.GetDetailStaffManagement)
+		staffManagement.GET("", staffManagementAdaptor.GetAllStaffManagement)
+		staffManagement.DELETE("/delete/:id", staffManagementAdaptor.DeleteStaffManagement)
 	}
 }

@@ -17,6 +17,7 @@ type SessionValidator interface {
 
 type AuthMiddleware struct {
 	validator SessionValidator
+	// uc        *usecase.Usecase
 }
 
 func NewAuthMiddleware(validator SessionValidator) *AuthMiddleware {
@@ -80,3 +81,32 @@ func (m *AuthMiddleware) RequireRole(roles ...string) gin.HandlerFunc {
 		c.Abort()
 	}
 }
+
+// //untuk melihat apakah di izinkan atau tidak
+// func (m *AuthMiddleware) RequirePermission(code string) gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		sessionIDStr, err := c.Cookie("session")
+// 		if err != nil {
+// 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized: session cookie missing"})
+// 			return
+// 		}
+
+// 		userID, err := //ambil logic user id bersarsarkan session di sini
+
+// 		if err != nil {
+// 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "internal error or invalid session"})
+// 			return
+// 		}
+
+// 		allowed, err := m.uc.Allowed(userID,code)
+// 		if err != nil {
+// 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "internal error checking permission"})
+// 			return
+// 		}
+// 		if !allowed {
+// 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "forbidden"})
+// 			return
+// 		}
+// 		c.Next()
+// 	}
+// }

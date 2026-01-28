@@ -1,9 +1,6 @@
 package data
 
 import (
-	"fmt"
-	"time"
-
 	"gorm.io/gorm"
 
 	"project-POS-APP-golang-team-float/internal/data/entity"
@@ -30,6 +27,12 @@ func Seed(db *gorm.DB) error {
 		return err
 	}
 	if err := seedSampleOrders(db); err != nil {
+		return err
+	}
+	if err := seedPermission(db); err != nil {
+		return err
+	}
+	if err := seedRolePermissions(db); err != nil {
 		return err
 	}
 	return nil
@@ -157,68 +160,22 @@ func seedSuperAdmin(db *gorm.DB) error {
 	return db.Create(user).Error
 }
 
-func seedProducts(db *gorm.DB) error {
-	// Check if products already exist
-	var count int64
-	db.Model(&entity.Product{}).Count(&count)
-	if count > 0 {
-		return nil
+// data dummy untuk permission
+func seedPermission(db *gorm.DB) error {
+	permissions := []entity.Permission{
+		{ID: 1, Code: "user:read", Description: "Melihat daftar dan detail user"},
+		{ID: 2, Code: "user:create", Description: "Menambahkan user baru"},
+		{ID: 3, Code: "user:update", Description: "Mengubah data user"},
+		{ID: 4, Code: "user:delete", Description: "Menghapus user (soft delete)"},
 	}
-
-	// Get category IDs
-	var categories []entity.Category
-	if err := db.Find(&categories).Error; err != nil {
-		return err
-	}
-
-	categoryMap := make(map[string]uint)
-	for _, cat := range categories {
-		categoryMap[cat.Name] = cat.ID
-	}
-
-	products := []entity.Product{
-		// Pizza
-		{CategoryID: categoryMap["Pizza"], Name: "Margherita Pizza", ItemID: "PIZ001", Description: "Classic tomato and mozzarella", Image: "/images/margherita.png", Price: 85000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Pizza"], Name: "Pepperoni Pizza", ItemID: "PIZ002", Description: "Pepperoni with cheese", Image: "/images/pepperoni.png", Price: 95000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Pizza"], Name: "BBQ Chicken Pizza", ItemID: "PIZ003", Description: "BBQ sauce with grilled chicken", Image: "/images/bbq-chicken.png", Price: 110000, Availability: "in_stock", MenuType: "special_deals"},
-
-		// Burger
-		{CategoryID: categoryMap["Burger"], Name: "Classic Burger", ItemID: "BUR001", Description: "Beef patty with fresh vegetables", Image: "/images/classic-burger.png", Price: 55000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Burger"], Name: "Cheese Burger", ItemID: "BUR002", Description: "Double cheese with beef patty", Image: "/images/cheese-burger.png", Price: 65000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Burger"], Name: "Chicken Burger", ItemID: "BUR003", Description: "Crispy chicken with mayo", Image: "/images/chicken-burger.png", Price: 60000, Availability: "in_stock", MenuType: "normal"},
-
-		// Chicken
-		{CategoryID: categoryMap["Chicken"], Name: "Fried Chicken", ItemID: "CHK001", Description: "Crispy fried chicken", Image: "/images/fried-chicken.png", Price: 45000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Chicken"], Name: "Grilled Chicken", ItemID: "CHK002", Description: "Herb grilled chicken", Image: "/images/grilled-chicken.png", Price: 55000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Chicken"], Name: "Chicken Wings", ItemID: "CHK003", Description: "Spicy buffalo wings", Image: "/images/chicken-wings.png", Price: 50000, Availability: "in_stock", MenuType: "special_deals"},
-
-		// Beverage
-		{CategoryID: categoryMap["Beverage"], Name: "Coca Cola", ItemID: "BEV001", Description: "Refreshing cola drink", Image: "/images/coca-cola.png", Price: 15000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Beverage"], Name: "Orange Juice", ItemID: "BEV002", Description: "Fresh orange juice", Image: "/images/orange-juice.png", Price: 25000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Beverage"], Name: "Iced Tea", ItemID: "BEV003", Description: "Refreshing iced tea", Image: "/images/iced-tea.png", Price: 18000, Availability: "in_stock", MenuType: "normal"},
-
-		// Seafood
-		{CategoryID: categoryMap["Seafood"], Name: "Grilled Salmon", ItemID: "SEA001", Description: "Fresh Atlantic salmon", Image: "/images/grilled-salmon.png", Price: 150000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Seafood"], Name: "Fish & Chips", ItemID: "SEA002", Description: "Crispy fish with fries", Image: "/images/fish-chips.png", Price: 85000, Availability: "in_stock", MenuType: "normal"},
-
-		// Bakery
-		{CategoryID: categoryMap["Bakery"], Name: "Chocolate Cake", ItemID: "BAK001", Description: "Rich chocolate layer cake", Image: "/images/chocolate-cake.png", Price: 45000, Availability: "in_stock", MenuType: "desserts_and_drinks"},
-		{CategoryID: categoryMap["Bakery"], Name: "Croissant", ItemID: "BAK002", Description: "Buttery French croissant", Image: "/images/croissant.png", Price: 25000, Availability: "in_stock", MenuType: "normal"},
-	}
-
-	// Create products with created_at in last 30 days for some (new products)
-	for i, product := range products {
-		// Make some products "new" (created within 30 days)
-		if i < 5 {
-			product.CreatedAt = time.Now().AddDate(0, 0, -i*5) // Recent products
-		} else {
-			product.CreatedAt = time.Now().AddDate(0, -2, 0) // Older products
-		}
-		if err := db.Create(&product).Error; err != nil {
-			return err
+	for _, permission := range permissions {
+		var existing entity.Permission
+		if db.Where("id = ?", permission.ID).First(&existing).RowsAffected == 0 {
+			if err := db.Create(&permission).Error; err != nil {
+				return err
+			}
 		}
 	}
-
 	return nil
 }
 
@@ -324,5 +281,28 @@ func seedSampleOrders(db *gorm.DB) error {
 		}
 	}
 
+	return nil
+}
+
+// data dummy untuk role permission
+func seedRolePermissions(db *gorm.DB) error {
+	RolePermissions := []entity.RolePermisson{
+		{RoleID: 1, PermissionID: 1},
+		{RoleID: 1, PermissionID: 2},
+		{RoleID: 1, PermissionID: 3},
+		{RoleID: 1, PermissionID: 4},
+		{RoleID: 2, PermissionID: 1},
+		{RoleID: 2, PermissionID: 2},
+		{RoleID: 2, PermissionID: 3},
+		{RoleID: 2, PermissionID: 4},
+	}
+	for _, RolePermission := range RolePermissions {
+		var existing entity.RolePermisson
+		if db.Where("role_id = ? AND permission_id =?", RolePermission.RoleID, RolePermission.PermissionID).First(&existing).RowsAffected == 0 {
+			if err := db.Create(&RolePermission).Error; err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
