@@ -3,7 +3,6 @@ package main
 import (
 	"project-POS-APP-golang-team-float/cmd"
 	"project-POS-APP-golang-team-float/internal/data"
-	"project-POS-APP-golang-team-float/internal/data/entity"
 	"project-POS-APP-golang-team-float/internal/data/repository"
 	"project-POS-APP-golang-team-float/internal/wire"
 	"project-POS-APP-golang-team-float/pkg/database"
