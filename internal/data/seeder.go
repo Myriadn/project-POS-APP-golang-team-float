@@ -23,6 +23,12 @@ func Seed(db *gorm.DB) error {
 	if err := seedSuperAdmin(db); err != nil {
 		return err
 	}
+	if err := seedProducts(db); err != nil {
+		return err
+	}
+	if err := seedSampleOrders(db); err != nil {
+		return err
+	}
 	if err := seedPermission(db); err != nil {
 		return err
 	}
@@ -170,6 +176,111 @@ func seedPermission(db *gorm.DB) error {
 			}
 		}
 	}
+	return nil
+}
+
+func seedSampleOrders(db *gorm.DB) error {
+	// Check if orders already exist
+	var count int64
+	db.Model(&entity.Order{}).Count(&count)
+	if count > 0 {
+		return nil
+	}
+
+	// Get superadmin user
+	var user entity.User
+	if err := db.Where("email = ?", "superadmin@posapp.com").First(&user).Error; err != nil {
+		return err
+	}
+
+	// Get payment method
+	var paymentMethod entity.PaymentMethod
+	if err := db.Where("name = ?", "Cash").First(&paymentMethod).Error; err != nil {
+		return err
+	}
+
+	// Get some tables
+	var tables []entity.Table
+	if err := db.Limit(5).Find(&tables).Error; err != nil {
+		return err
+	}
+
+	// Get products
+	var products []entity.Product
+	if err := db.Find(&products).Error; err != nil {
+		return err
+	}
+
+	if len(products) == 0 || len(tables) == 0 {
+		return nil
+	}
+
+	// Create sample orders for the last 30 days
+	taxRate := 5.00
+	for i := range 20 {
+		orderDate := time.Now().AddDate(0, 0, -i)
+		tableID := tables[i%len(tables)].ID
+		paymentMethodID := paymentMethod.ID
+
+		// Calculate order totals
+		subtotal := 0.0
+		orderItems := []entity.OrderItem{}
+
+		// Add 2-4 random products to each order
+		numItems := 2 + (i % 3)
+		for j := range numItems {
+			product := products[(i+j)%len(products)]
+			quantity := 1 + (j % 3)
+			unitPrice := product.Price
+			totalPrice := unitPrice * float64(quantity)
+			subtotal += totalPrice
+
+			orderItems = append(orderItems, entity.OrderItem{
+				ProductID:  product.ID,
+				Quantity:   quantity,
+				UnitPrice:  unitPrice,
+				TotalPrice: totalPrice,
+			})
+		}
+
+		taxAmount := subtotal * (taxRate / 100)
+		total := subtotal + taxAmount
+
+		// Determine order status
+		status := "completed"
+		if i%7 == 0 {
+			status = "cancelled"
+		} else if i%5 == 0 {
+			status = "in_process"
+		}
+
+		order := &entity.Order{
+			OrderNumber:     fmt.Sprintf("ORD%s%03d", orderDate.Format("20060102"), i+1),
+			TableID:         &tableID,
+			UserID:          user.ID,
+			PaymentMethodID: &paymentMethodID,
+			CustomerName:    fmt.Sprintf("Customer %d", i+1),
+			Status:          status,
+			Subtotal:        subtotal,
+			TaxRate:         taxRate,
+			TaxAmount:       taxAmount,
+			Total:           total,
+			OrderDate:       orderDate,
+		}
+
+		if err := db.Create(order).Error; err != nil {
+			return err
+		}
+
+		// Create order items
+		for _, item := range orderItems {
+			item.OrderID = order.ID
+			if err := db.Create(&item).Error; err != nil {
+				return err
+			}
+		}
+	}
+
 	return nil
 }
 
