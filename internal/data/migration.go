@@ -12,6 +12,8 @@ func Migrate(db *gorm.DB) error {
 		&entity.Role{},
 		&entity.User{},
 		&entity.Session{},
+		&entity.Permission{},
+		&entity.RolePermisson{},
 		&entity.Category{},
 		&entity.PaymentMethod{},
 		&entity.Product{},
@@ -19,8 +21,6 @@ func Migrate(db *gorm.DB) error {
 		&entity.Order{},
 		&entity.OrderItem{},
 		&entity.OTPCode{},
-		&entity.Permission{},
-        &entity.RolePermisson{},
 	)
 
 	if err != nil {

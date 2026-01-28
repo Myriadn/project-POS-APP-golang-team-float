@@ -1,8 +1,8 @@
 package middleware
 
 import (
+	"net/http"
 	"slices"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -15,27 +15,35 @@ type SessionValidator interface {
 	ValidateSession(token uuid.UUID) (*entity.User, error)
 }
 
-type AuthMiddleware struct {
-	validator SessionValidator
-	// uc        *usecase.Usecase
+type PermissionChecker interface {
+	Allowed(userID uint, code string) (bool, error)
 }
 
-func NewAuthMiddleware(validator SessionValidator) *AuthMiddleware {
-	return &AuthMiddleware{validator: validator}
+type AuthMiddleware struct {
+	validator   SessionValidator
+	permChecker PermissionChecker
+}
+
+func NewAuthMiddleware(validator SessionValidator, permChecker PermissionChecker) *AuthMiddleware {
+	return &AuthMiddleware{validator: validator, permChecker: permChecker}
 }
 
 func (m *AuthMiddleware) Authenticate() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authHeader := c.GetHeader("Authorization")
-		if authHeader == "" {
-			utils.Unauthorized(c, "Authorization header required")
-			c.Abort()
-			return
+		var tokenStr string
+
+		cookieToken, err := c.Cookie("session_token")
+		if err == nil && cookieToken != "" {
+			tokenStr = cookieToken
+		} else {
+			authHeader := c.GetHeader("Authorization")
+			if authHeader != "" && len(authHeader) > 7 {
+				tokenStr = authHeader[7:] // Hapus "Bearer "
+			}
 		}
 
-		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
-		if tokenStr == authHeader {
-			utils.Unauthorized(c, "Invalid authorization format")
+		if tokenStr == "" {
+			utils.Unauthorized(c, "Session token required")
 			c.Abort()
 			return
 		}
@@ -49,6 +57,7 @@ func (m *AuthMiddleware) Authenticate() gin.HandlerFunc {
 
 		user, err := m.validator.ValidateSession(token)
 		if err != nil {
+			c.SetCookie("session_token", "", -1, "/", "localhost", false, true)
 			utils.Unauthorized(c, err.Error())
 			c.Abort()
 			return
@@ -82,31 +91,39 @@ func (m *AuthMiddleware) RequireRole(roles ...string) gin.HandlerFunc {
 	}
 }
 
-// //untuk melihat apakah di izinkan atau tidak
-// func (m *AuthMiddleware) RequirePermission(code string) gin.HandlerFunc {
-// 	return func(c *gin.Context) {
-// 		sessionIDStr, err := c.Cookie("session")
-// 		if err != nil {
-// 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized: session cookie missing"})
-// 			return
-// 		}
+// untuk melihat apakah di izinkan atau tidak
+func (m *AuthMiddleware) RequirePermission(permissionCode string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Ambil User ID dari Context (ini diset oleh Authenticate sebelumnya)
+		userIDInterface, exists := c.Get("user_id")
+		if !exists {
+			utils.Unauthorized(c, "User ID not found in context")
+			c.Abort()
+			return
+		}
 
-// 		userID, err := //ambil logic user id bersarsarkan session di sini
+		// Pastikan tipe datanya uint
+		userID, ok := userIDInterface.(uint)
+		if !ok {
+			utils.Unauthorized(c, "Invalid user ID format")
+			c.Abort()
+			return
+		}
 
-// 		if err != nil {
-// 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "internal error or invalid session"})
-// 			return
-// 		}
+		// Panggil Method Allowed di Usecase
+		allowed, err := m.permChecker.Allowed(userID, permissionCode)
+		if err != nil {
+			utils.ErrorResponse(c, http.StatusInternalServerError, "Error checking permission", err.Error())
+			c.Abort()
+			return
+		}
 
-// 		allowed, err := m.uc.Allowed(userID,code)
-// 		if err != nil {
-// 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "internal error checking permission"})
-// 			return
-// 		}
-// 		if !allowed {
-// 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "forbidden"})
-// 			return
-// 		}
-// 		c.Next()
-// 	}
-// }
+		if !allowed {
+			utils.ErrorResponse(c, http.StatusForbidden, "You don't have permission: "+permissionCode, nil)
+			c.Abort()
+			return
+		}
+
+		c.Next()
+	}
+}

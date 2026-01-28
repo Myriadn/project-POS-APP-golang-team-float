@@ -16,6 +16,7 @@ type Session struct {
 	ExpiresAt      time.Time `gorm:"not null" json:"expires_at"`
 	LastActivityAt time.Time `gorm:"default:now()" json:"last_activity_at"`
 	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
 	User           User      `gorm:"foreignKey:UserID" json:"-"`
 }
 

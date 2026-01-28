@@ -49,6 +49,7 @@ func (a *AuthAdaptor) VerifyOTP(c *gin.Context) {
 		return
 	}
 
+	c.SetCookie("session_token", result.Token, 86400, "/", "localhost", false, true)
 	utils.Success(c, "Login successful", result)
 }
 
@@ -85,9 +86,17 @@ func (a *AuthAdaptor) ResetPassword(c *gin.Context) {
 }
 
 func (a *AuthAdaptor) Logout(c *gin.Context) {
-	tokenStr := c.GetHeader("Authorization")
-	if len(tokenStr) > 7 && tokenStr[:7] == "Bearer " {
-		tokenStr = tokenStr[7:]
+	tokenStr, err := c.Cookie("session_token")
+	if tokenStr == "" {
+		tokenStr = c.GetHeader("Authorization")
+		if len(tokenStr) > 7 {
+			tokenStr = tokenStr[7:]
+		}
+	}
+
+	if tokenStr == "" {
+		utils.Unauthorized(c, "No session found")
+		return
 	}
 
 	token, err := uuid.Parse(tokenStr)
@@ -101,5 +110,6 @@ func (a *AuthAdaptor) Logout(c *gin.Context) {
 		return
 	}
 
+	c.SetCookie("session_token", "", -1, "/", "localhost", false, true)
 	utils.Success(c, "Logged out successfully", nil)
 }

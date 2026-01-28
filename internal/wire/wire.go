@@ -24,7 +24,7 @@ func Wiring(cfg WireConfig) *gin.Engine {
 
 	// Create shared usecase and middleware
 	uc := usecase.NewUsecase(cfg.Repo, cfg.RepoSM, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
-	authMw := middleware.NewAuthMiddleware(uc)
+	authMw := middleware.NewAuthMiddleware(uc, uc) // uc 2 times because both implemented on middleware
 
 	wireAuth(api, uc, authMw)
 	wireDashboard(api, uc, authMw)
@@ -53,6 +53,7 @@ func wireDashboard(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middlew
 
 	dashboard := router.Group("/dashboard")
 	dashboard.Use(authMw.Authenticate())
+	// dashboard.Use(authMw.RequirePermission("view_dashboard"))
 	{
 		dashboard.GET("", dashboardAdaptor.GetDashboardSummary)
 		dashboard.GET("/daily-sales", dashboardAdaptor.GetDailySales)
@@ -68,6 +69,7 @@ func wireStaffManagement(router *gin.RouterGroup, uc *usecase.Usecase, authMw *m
 
 	staffManagement := router.Group("/staff-management")
 	staffManagement.Use(authMw.Authenticate())
+	staffManagement.Use(authMw.RequirePermission("manage_staff"))
 	{
 		staffManagement.POST("/create", staffManagementAdaptor.CreateNewStaffManagement)
 		staffManagement.PATCH("/update/:id", staffManagementAdaptor.UpdateStaffManagement)
