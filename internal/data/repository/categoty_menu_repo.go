@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"project-POS-APP-golang-team-float/internal/data/entity"
 	"project-POS-APP-golang-team-float/internal/dto"
 
@@ -16,6 +17,7 @@ type CategoryMenuRepoInterface interface {
 	UpdateCategoryMenu(ctx context.Context, id uint, data map[string]interface{}) error
 	GetDetailCategoryMenu(ctx context.Context, id uint) (*entity.Category, error)
 	GetAllCategoryMenu(ctx context.Context, f dto.FilterRequest) ([]*entity.Category, int64, error)
+	DeleteCategoryMenu(ctx context.Context, id uint) error
 }
 
 func NewCategoryMenuRepo(db *gorm.DB) CategoryMenuRepoInterface {
@@ -75,4 +77,16 @@ func (b *CategoryMenuRepo) GetAllCategoryMenu(ctx context.Context, f dto.FilterR
 	}
 
 	return category, totalItems, nil
+}
+
+// delete category menu
+func (b *CategoryMenuRepo) DeleteCategoryMenu(ctx context.Context, id uint) error {
+	result := b.db.WithContext(ctx).Delete(&entity.Category{}, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return errors.New("data category menu tidak ditemukan")
+	}
+	return nil
 }

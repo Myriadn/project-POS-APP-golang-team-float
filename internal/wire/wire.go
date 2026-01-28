@@ -90,6 +90,7 @@ func wireCategoryMenu(router *gin.RouterGroup, uc *usecase.Usecase, authMw *midd
 		CategoryMenu.PATCH("/update/:id", authMw.RequirePermission("category:update"), CategoryMenuAdaptor.UpdateCategoryMenu)
 		CategoryMenu.GET("/:id", authMw.RequirePermission("category:read"), CategoryMenuAdaptor.GetDetailCategoryMenu)
 		CategoryMenu.GET("", authMw.RequirePermission("category:read"), CategoryMenuAdaptor.GetAllCategoryMenu)
+		CategoryMenu.DELETE("/delete/:id", authMw.RequirePermission("category:delete"), CategoryMenuAdaptor.DeleteCategoryMenu)
 
 	}
 }

@@ -17,6 +17,7 @@ type CategoryMenuUsecaseInterface interface {
 	UpdateCategoryMenuUsecase(ctx context.Context, id uint, req dto.UpdateCategoryMenuReq) (*dto.MessageResponse, error)
 	GetDetailCategoryMenu(ctx context.Context, id uint) (*dto.DetailCategoryResponse, *dto.MessageResponse, error)
 	GetAllCategoryMenu(ctx context.Context, req dto.FilterRequest) ([]*dto.AllCategoryMenuResponse, dto.Pagination, error)
+	DeleteCategoryMenu(ctx context.Context, id uint) (*dto.MessageResponse, error)
 }
 
 func NewCategoryMenuUsecase(repo repository.CategoryMenuRepoInterface) CategoryMenuUsecaseInterface {
@@ -80,6 +81,7 @@ func (b *CategoryMenuUsecase) GetDetailCategoryMenu(ctx context.Context, id uint
 	return resp, &dto.MessageResponse{Message: "berhasil mengambil detail category menu"}, nil
 }
 
+// logic bisnis untuk mengambil semua category menu
 func (b *CategoryMenuUsecase) GetAllCategoryMenu(ctx context.Context, req dto.FilterRequest) ([]*dto.AllCategoryMenuResponse, dto.Pagination, error) {
 	if req.Page == 0 {
 		req.Page = 1
@@ -112,4 +114,15 @@ func (b *CategoryMenuUsecase) GetAllCategoryMenu(ctx context.Context, req dto.Fi
 		TotalRecords: total,
 	}
 	return categoryResponse, pagination, nil
+}
+
+// delete category menu
+func (b *CategoryMenuUsecase) DeleteCategoryMenu(ctx context.Context, id uint) (*dto.MessageResponse, error) {
+
+	err := b.repo.DeleteCategoryMenu(ctx, uint(id))
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.MessageResponse{Message: "Berhasil delete data category menu"}, nil
 }
