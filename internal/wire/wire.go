@@ -71,13 +71,12 @@ func wireStaffManagement(router *gin.RouterGroup, uc *usecase.Usecase, authMw *m
 
 	staffManagement := router.Group("/staff-management")
 	staffManagement.Use(authMw.Authenticate())
-	staffManagement.Use(authMw.RequirePermission("manage_staff"))
 	{
-		staffManagement.POST("/create", staffManagementAdaptor.CreateNewStaffManagement)
-		staffManagement.PATCH("/update/:id", staffManagementAdaptor.UpdateStaffManagement)
-		staffManagement.GET("/:id", staffManagementAdaptor.GetDetailStaffManagement)
-		staffManagement.GET("", staffManagementAdaptor.GetAllStaffManagement)
-		staffManagement.DELETE("/delete/:id", staffManagementAdaptor.DeleteStaffManagement)
+		staffManagement.POST("/create", authMw.RequirePermission("user:create"), staffManagementAdaptor.CreateNewStaffManagement)
+		staffManagement.PATCH("/update/:id", authMw.RequirePermission("user:update"), staffManagementAdaptor.UpdateStaffManagement)
+		staffManagement.GET("/:id", authMw.RequirePermission("user:read"), staffManagementAdaptor.GetDetailStaffManagement)
+		staffManagement.GET("", authMw.RequirePermission("user:read"), staffManagementAdaptor.GetAllStaffManagement)
+		staffManagement.DELETE("/delete/:id", authMw.RequirePermission("user:delete"), staffManagementAdaptor.DeleteStaffManagement)
 	}
 }
 
@@ -89,6 +88,7 @@ func wireCategoryMenu(router *gin.RouterGroup, uc *usecase.Usecase, authMw *midd
 	{
 		CategoryMenu.POST("/create", authMw.RequirePermission("category:create"), CategoryMenuAdaptor.CreateNewCategoryMenu)
 		CategoryMenu.PATCH("/update/:id", authMw.RequirePermission("category:update"), CategoryMenuAdaptor.UpdateCategoryMenu)
+		CategoryMenu.GET("/:id", authMw.RequirePermission("category:read"), CategoryMenuAdaptor.GetDetailCategoryMenu)
 
 	}
 }

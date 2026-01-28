@@ -64,3 +64,11 @@ type PaginationData struct {
 	Items any         `json:"items"`
 	Meta  *Pagination `json:"meta"`
 }
+
+// detail category menu
+type DetailCategoryResponse struct {
+	ID          uint   `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Icon        string `json:"icon"`
+}

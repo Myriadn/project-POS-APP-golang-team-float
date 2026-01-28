@@ -58,3 +58,22 @@ func (a *CategoryMenuAdaptor) UpdateCategoryMenu(c *gin.Context) {
 
 	utils.Success(c, result.Message, nil)
 }
+
+// requset untuk dapat detail category  menu
+func (a *CategoryMenuAdaptor) GetDetailCategoryMenu(c *gin.Context) {
+
+	ctx := c.Request.Context()
+	idString := c.Param("id")
+	idInt, err := strconv.Atoi(idString)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "ID harus berupa angka"})
+		return
+	}
+	id := uint(idInt)
+	user, message, err := a.CategoryMenuUsecase.GetDetailCategoryMenu(ctx, id)
+	if err != nil {
+		utils.BadRequest(c, err.Error(), nil)
+		return
+	}
+	utils.SuccessResponse(c, 200, message.Message, user)
+}

@@ -13,6 +13,7 @@ type CategoryMenuRepo struct {
 type CategoryMenuRepoInterface interface {
 	CreateNewCategory(ctx context.Context, category *entity.Category) error
 	UpdateCategoryMenu(ctx context.Context, id uint, data map[string]interface{}) error
+	GetDetailCategoryMenu(ctx context.Context, id uint) (*entity.Category, error)
 }
 
 func NewCategoryMenuRepo(db *gorm.DB) CategoryMenuRepoInterface {
@@ -37,4 +38,14 @@ func (b *CategoryMenuRepo) UpdateCategoryMenu(ctx context.Context, id uint, data
 		return result.Error
 	}
 	return nil
+}
+
+// mendapatkan detail category menu
+func (b *CategoryMenuRepo) GetDetailCategoryMenu(ctx context.Context, id uint) (*entity.Category, error) {
+	var category entity.Category
+	result := b.db.WithContext(ctx).First(&category, id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &category, nil
 }

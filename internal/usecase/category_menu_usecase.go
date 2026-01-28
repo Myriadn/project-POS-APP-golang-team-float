@@ -14,6 +14,7 @@ type CategoryMenuUsecase struct {
 type CategoryMenuUsecaseInterface interface {
 	CreateNewCategoryUsecase(ctx context.Context, req dto.CreateNewCategoryMenuReq) (*dto.MessageResponse, error)
 	UpdateCategoryMenuUsecase(ctx context.Context, id uint, req dto.UpdateCategoryMenuReq) (*dto.MessageResponse, error)
+	GetDetailCategoryMenu(ctx context.Context, id uint) (*dto.DetailCategoryResponse, *dto.MessageResponse, error)
 }
 
 func NewCategoryMenuUsecase(repo repository.CategoryMenuRepoInterface) CategoryMenuUsecaseInterface {
@@ -60,4 +61,19 @@ func (b *CategoryMenuUsecase) UpdateCategoryMenuUsecase(ctx context.Context, id 
 	}
 
 	return &dto.MessageResponse{Message: "Berhasil update data category menu"}, nil
+}
+
+// ambil detail category menu
+func (b *CategoryMenuUsecase) GetDetailCategoryMenu(ctx context.Context, id uint) (*dto.DetailCategoryResponse, *dto.MessageResponse, error) {
+	category, err := b.repo.GetDetailCategoryMenu(ctx, id)
+	if err != nil {
+		return nil, nil, err
+	}
+	resp := &dto.DetailCategoryResponse{
+		ID:          category.ID,
+		Name:        category.Name,
+		Description: category.Description,
+		Icon:        category.Icon,
+	}
+	return resp, &dto.MessageResponse{Message: "berhasil mengambil detail category menu"}, nil
 }
