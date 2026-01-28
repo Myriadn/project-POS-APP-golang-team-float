@@ -88,6 +88,7 @@ func wireCategoryMenu(router *gin.RouterGroup, uc *usecase.Usecase, authMw *midd
 	CategoryMenu.Use(authMw.Authenticate())
 	{
 		CategoryMenu.POST("/create", authMw.RequirePermission("category:create"), CategoryMenuAdaptor.CreateNewCategoryMenu)
+		CategoryMenu.PATCH("/update/:id", authMw.RequirePermission("category:update"), CategoryMenuAdaptor.UpdateCategoryMenu)
 
 	}
 }

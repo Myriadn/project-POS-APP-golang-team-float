@@ -67,3 +67,10 @@ type CreateNewCategoryMenuReq struct {
 	Description string `json:"description" binding:"required,min=3,max=255"`
 	Icon        string `json:"icon" binding:"required,min=3,max=500"`
 }
+
+// request untuk membuat category menu
+type UpdateCategoryMenuReq struct {
+	Name        string `json:"name" binding:"omitempty,min=3,max=100"`
+	Description string `json:"description" binding:"omitempty,min=3,max=255"`
+	Icon        string `json:"icon" binding:"omitempty,min=3,max=500"`
+}

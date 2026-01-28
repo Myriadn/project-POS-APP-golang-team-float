@@ -12,6 +12,7 @@ type CategoryMenuRepo struct {
 }
 type CategoryMenuRepoInterface interface {
 	CreateNewCategory(ctx context.Context, category *entity.Category) error
+	UpdateCategoryMenu(ctx context.Context, id uint, data map[string]interface{}) error
 }
 
 func NewCategoryMenuRepo(db *gorm.DB) CategoryMenuRepoInterface {
@@ -23,6 +24,15 @@ func NewCategoryMenuRepo(db *gorm.DB) CategoryMenuRepoInterface {
 // membuat category menu baru
 func (b *CategoryMenuRepo) CreateNewCategory(ctx context.Context, category *entity.Category) error {
 	result := b.db.WithContext(ctx).Create(category)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+// mengedit category menu dengan beberapa data saja
+func (b *CategoryMenuRepo) UpdateCategoryMenu(ctx context.Context, id uint, data map[string]interface{}) error {
+	result := b.db.WithContext(ctx).Model(&entity.Category{}).Where("id=?", id).Updates(data)
 	if result.Error != nil {
 		return result.Error
 	}
