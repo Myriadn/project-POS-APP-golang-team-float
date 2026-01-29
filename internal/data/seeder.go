@@ -99,32 +99,32 @@ func seedProducts(db *gorm.DB) error {
 
 	products := []entity.Product{
 		// Pizza
-		{CategoryID: categoryMap["Pizza"], Name: "Margherita Pizza", ItemID: "PIZ001", Description: "Classic tomato and mozzarella", Image: "/images/margherita.png", Price: 85000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Pizza"], Name: "Pepperoni Pizza", ItemID: "PIZ002", Description: "Pepperoni with cheese", Image: "/images/pepperoni.png", Price: 95000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Pizza"], Name: "BBQ Chicken Pizza", ItemID: "PIZ003", Description: "BBQ sauce with grilled chicken", Image: "/images/bbq-chicken.png", Price: 110000, Availability: "in_stock", MenuType: "special_deals"},
+		{CategoryID: categoryMap["Pizza"], Name: "Margherita Pizza", Stock: 19, Description: "Classic tomato and mozzarella", Image: "/images/margherita.png", Price: 85000, Availability: "in_stock", MenuType: "normal"},
+		{CategoryID: categoryMap["Pizza"], Name: "Pepperoni Pizza", Stock: 4, Description: "Pepperoni with cheese", Image: "/images/pepperoni.png", Price: 95000, Availability: "in_stock", MenuType: "normal"},
+		{CategoryID: categoryMap["Pizza"], Name: "BBQ Chicken Pizza", Stock: 6, Description: "BBQ sauce with grilled chicken", Image: "/images/bbq-chicken.png", Price: 110000, Availability: "in_stock", MenuType: "special_deals"},
 
 		// Burger
-		{CategoryID: categoryMap["Burger"], Name: "Classic Burger", ItemID: "BUR001", Description: "Beef patty with fresh vegetables", Image: "/images/classic-burger.png", Price: 55000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Burger"], Name: "Cheese Burger", ItemID: "BUR002", Description: "Double cheese with beef patty", Image: "/images/cheese-burger.png", Price: 65000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Burger"], Name: "Chicken Burger", ItemID: "BUR003", Description: "Crispy chicken with mayo", Image: "/images/chicken-burger.png", Price: 60000, Availability: "in_stock", MenuType: "normal"},
+		{CategoryID: categoryMap["Burger"], Name: "Classic Burger", Stock: 6, Description: "Beef patty with fresh vegetables", Image: "/images/classic-burger.png", Price: 55000, Availability: "in_stock", MenuType: "normal"},
+		{CategoryID: categoryMap["Burger"], Name: "Cheese Burger", Stock: 8, Description: "Double cheese with beef patty", Image: "/images/cheese-burger.png", Price: 65000, Availability: "in_stock", MenuType: "normal"},
+		{CategoryID: categoryMap["Burger"], Name: "Chicken Burger", Stock: 9, Description: "Crispy chicken with mayo", Image: "/images/chicken-burger.png", Price: 60000, Availability: "in_stock", MenuType: "normal"},
 
 		// Chicken
-		{CategoryID: categoryMap["Chicken"], Name: "Fried Chicken", ItemID: "CHK001", Description: "Crispy fried chicken", Image: "/images/fried-chicken.png", Price: 45000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Chicken"], Name: "Grilled Chicken", ItemID: "CHK002", Description: "Herb grilled chicken", Image: "/images/grilled-chicken.png", Price: 55000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Chicken"], Name: "Chicken Wings", ItemID: "CHK003", Description: "Spicy buffalo wings", Image: "/images/chicken-wings.png", Price: 50000, Availability: "in_stock", MenuType: "special_deals"},
+		{CategoryID: categoryMap["Chicken"], Name: "Fried Chicken", Stock: 16, Description: "Crispy fried chicken", Image: "/images/fried-chicken.png", Price: 45000, Availability: "in_stock", MenuType: "normal"},
+		{CategoryID: categoryMap["Chicken"], Name: "Grilled Chicken", Stock: 40, Description: "Herb grilled chicken", Image: "/images/grilled-chicken.png", Price: 55000, Availability: "in_stock", MenuType: "normal"},
+		{CategoryID: categoryMap["Chicken"], Name: "Chicken Wings", Stock: 6, Description: "Spicy buffalo wings", Image: "/images/chicken-wings.png", Price: 50000, Availability: "in_stock", MenuType: "special_deals"},
 
 		// Beverage
-		{CategoryID: categoryMap["Beverage"], Name: "Coca Cola", ItemID: "BEV001", Description: "Refreshing cola drink", Image: "/images/coca-cola.png", Price: 15000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Beverage"], Name: "Orange Juice", ItemID: "BEV002", Description: "Fresh orange juice", Image: "/images/orange-juice.png", Price: 25000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Beverage"], Name: "Iced Tea", ItemID: "BEV003", Description: "Refreshing iced tea", Image: "/images/iced-tea.png", Price: 18000, Availability: "in_stock", MenuType: "normal"},
+		{CategoryID: categoryMap["Beverage"], Name: "Coca Cola", Stock: 8, Description: "Refreshing cola drink", Image: "/images/coca-cola.png", Price: 15000, Availability: "in_stock", MenuType: "normal"},
+		{CategoryID: categoryMap["Beverage"], Name: "Orange Juice", Stock: 9, Description: "Fresh orange juice", Image: "/images/orange-juice.png", Price: 25000, Availability: "in_stock", MenuType: "normal"},
+		{CategoryID: categoryMap["Beverage"], Name: "Iced Tea", Stock: 7, Description: "Refreshing iced tea", Image: "/images/iced-tea.png", Price: 18000, Availability: "in_stock", MenuType: "normal"},
 
 		// Seafood
-		{CategoryID: categoryMap["Seafood"], Name: "Grilled Salmon", ItemID: "SEA001", Description: "Fresh Atlantic salmon", Image: "/images/grilled-salmon.png", Price: 150000, Availability: "in_stock", MenuType: "normal"},
-		{CategoryID: categoryMap["Seafood"], Name: "Fish & Chips", ItemID: "SEA002", Description: "Crispy fish with fries", Image: "/images/fish-chips.png", Price: 85000, Availability: "in_stock", MenuType: "normal"},
+		{CategoryID: categoryMap["Seafood"], Name: "Grilled Salmon", Stock: 17, Description: "Fresh Atlantic salmon", Image: "/images/grilled-salmon.png", Price: 150000, Availability: "in_stock", MenuType: "normal"},
+		{CategoryID: categoryMap["Seafood"], Name: "Fish & Chips", Stock: 8, Description: "Crispy fish with fries", Image: "/images/fish-chips.png", Price: 85000, Availability: "in_stock", MenuType: "normal"},
 
 		// Bakery
-		{CategoryID: categoryMap["Bakery"], Name: "Chocolate Cake", ItemID: "BAK001", Description: "Rich chocolate layer cake", Image: "/images/chocolate-cake.png", Price: 45000, Availability: "in_stock", MenuType: "desserts_and_drinks"},
-		{CategoryID: categoryMap["Bakery"], Name: "Croissant", ItemID: "BAK002", Description: "Buttery French croissant", Image: "/images/croissant.png", Price: 25000, Availability: "in_stock", MenuType: "normal"},
+		{CategoryID: categoryMap["Bakery"], Name: "Chocolate Cake", Stock: 9, Description: "Rich chocolate layer cake", Image: "/images/chocolate-cake.png", Price: 45000, Availability: "in_stock", MenuType: "desserts_and_drinks"},
+		{CategoryID: categoryMap["Bakery"], Name: "Croissant", Stock: 30, Description: "Buttery French croissant", Image: "/images/croissant.png", Price: 25000, Availability: "in_stock", MenuType: "normal"},
 	}
 
 	// Create products with created_at in last 30 days for some (new products)
@@ -238,6 +238,10 @@ func seedPermission(db *gorm.DB) error {
 		{ID: 6, Code: "category:update", Description: "mengubah data category menu"},
 		{ID: 7, Code: "category:read", Description: "Melihat daftar dan detail category menu"},
 		{ID: 8, Code: "category:delete", Description: "menghapus category menu"},
+		{ID: 9, Code: "product:create", Description: "Menambahkan product menu baru"},
+		{ID: 10, Code: "product:update", Description: "mengubah data product menu"},
+		{ID: 11, Code: "product:read", Description: "Melihat daftar dan detail product menu"},
+		{ID: 12, Code: "product:delete", Description: "menghapus product menu"},
 	}
 	for _, permission := range permissions {
 		var existing entity.Permission
@@ -374,6 +378,14 @@ func seedRolePermissions(db *gorm.DB) error {
 		{RoleID: 2, PermissionID: 7},
 		{RoleID: 1, PermissionID: 8},
 		{RoleID: 2, PermissionID: 8},
+		{RoleID: 1, PermissionID: 9},
+		{RoleID: 2, PermissionID: 9},
+		{RoleID: 1, PermissionID: 10},
+		{RoleID: 2, PermissionID: 10},
+		{RoleID: 1, PermissionID: 11},
+		{RoleID: 2, PermissionID: 11},
+		{RoleID: 1, PermissionID: 12},
+		{RoleID: 2, PermissionID: 12},
 	}
 	for _, RolePermission := range RolePermissions {
 		var existing entity.RolePermisson

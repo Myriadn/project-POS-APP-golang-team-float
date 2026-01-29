@@ -74,3 +74,15 @@ type UpdateCategoryMenuReq struct {
 	Description string `json:"description" binding:"omitempty,min=3,max=255"`
 	Icon        string `json:"icon" binding:"omitempty,min=3,max=500"`
 }
+
+// request untuk membuat category menu
+type CreateNewProductMenuReq struct {
+	CategotyID   uint    `json:"category_id" binding:"required,min=1"`
+	Name         string  `json:"name" binding:"required,min=3,max=100"`
+	Description  string  `json:"description" binding:"required,min=3,max=255"`
+	Stock        int     `json:"stock" binding:"required,min=0"`
+	Image        string  `json:"image" binding:"required,min=3,max=500"`
+	Price        float64 `json:"price" binding:"required"`
+	Availability string  `json:"availability" binding:"required"`
+	MenuType     string  `json:"menu_type" binding:"required,min=3,max=100"`
+}
