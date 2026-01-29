@@ -13,6 +13,7 @@ type ProductMenuRepo struct {
 type ProductMenuRepoInterface interface {
 	CreateNewProduct(ctx context.Context, product *entity.Product) error
 	UpdateProductMenu(ctx context.Context, id uint, data map[string]interface{}) error
+	GetDetailProductMenu(ctx context.Context, id uint) (*entity.Product, error)
 }
 
 func NewProductMenuRepo(db *gorm.DB) ProductMenuRepoInterface {
@@ -37,4 +38,14 @@ func (b *ProductMenuRepo) UpdateProductMenu(ctx context.Context, id uint, data m
 		return result.Error
 	}
 	return nil
+}
+
+// mendapatkan detail product menu
+func (b *ProductMenuRepo) GetDetailProductMenu(ctx context.Context, id uint) (*entity.Product, error) {
+	var product entity.Product
+	result := b.db.WithContext(ctx).Preload("Category").First(&product, id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &product, nil
 }

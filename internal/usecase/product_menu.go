@@ -14,6 +14,7 @@ type ProductMenuUsecase struct {
 type ProductMenuUsecaseInterface interface {
 	CreateNewProductUsecase(ctx context.Context, req dto.CreateNewProductMenuReq) (*dto.MessageResponse, error)
 	UpdateProductMenuUsecase(ctx context.Context, id uint, req dto.UpdateProductMenuReq) (*dto.MessageResponse, error)
+	GetDetailProductMenu(ctx context.Context, id uint) (*dto.DetailProductResponse, *dto.MessageResponse, error)
 }
 
 func NewProductMenuUsecase(repo repository.ProductMenuRepoInterface) ProductMenuUsecaseInterface {
@@ -81,4 +82,23 @@ func (b *ProductMenuUsecase) UpdateProductMenuUsecase(ctx context.Context, id ui
 	}
 
 	return &dto.MessageResponse{Message: "Berhasil update data product menu"}, nil
+}
+
+// ambil detail product menu
+func (b *ProductMenuUsecase) GetDetailProductMenu(ctx context.Context, id uint) (*dto.DetailProductResponse, *dto.MessageResponse, error) {
+	product, err := b.repo.GetDetailProductMenu(ctx, id)
+	if err != nil {
+		return nil, nil, err
+	}
+	resp := &dto.DetailProductResponse{
+		ID:           product.ID,
+		Name:         product.Name,
+		Description:  product.Description,
+		Price:        product.Price,
+		Stock:        product.Stock,
+		CategotyName: product.Category.Name,
+		Image:        product.Image,
+		Availability: product.Availability,
+	}
+	return resp, &dto.MessageResponse{Message: "berhasil mengambil detail product menu"}, nil
 }
