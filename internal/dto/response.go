@@ -78,3 +78,26 @@ type AllCategoryMenuResponse struct {
 	TotalItems int64  `json:"total_items"`
 	Icon       string `json:"icon"`
 }
+
+// detail product menu
+type DetailProductResponse struct {
+	ID           uint    `json:"id"`
+	Name         string  `json:"name"`
+	Description  string  `json:"description"`
+	Price        float64 `json:"price"`
+	Stock        int     `json:"stock"`
+	CategotyName string  `json:"category_name"`
+	Image        string  `json:"image"`
+	Availability string  `json:"availability"`
+}
+
+// all product menu
+type AllProductResponse struct {
+	ID           uint    `json:"id"`
+	Name         string  `json:"name"`
+	Price        float64 `json:"price"`
+	Stock        int     `json:"stock"`
+	CategotyName string  `json:"category_name"`
+	Image        string  `json:"image"`
+	Availability string  `json:"availability"`
+}

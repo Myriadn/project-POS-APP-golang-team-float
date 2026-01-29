@@ -58,6 +58,7 @@ func main() {
 	repo := repository.NewRepository(db)
 	repoSM := repository.NewStaffManagementRepo(db)
 	repoCategory := repository.NewCategoryMenuRepo(db)
+	repoProduct := repository.NewProductMenuRepo(db)
 
 	// Email Service
 	emailSvc := email.NewSMTPService(email.SMTPConfig{
@@ -73,6 +74,7 @@ func main() {
 		Repo:             repo,
 		RepoSM:           repoSM,
 		Category:         repoCategory,
+		Product:          repoProduct,
 		EmailSvc:         emailSvc,
 		OTPExpireMinutes: cfg.OTP.ExpireMinutes,
 		SessionExpireHrs: cfg.Session.ExpireHours,
