@@ -17,6 +17,7 @@ type ProductMenuUsecaseInterface interface {
 	UpdateProductMenuUsecase(ctx context.Context, id uint, req dto.UpdateProductMenuReq) (*dto.MessageResponse, error)
 	GetDetailProductMenu(ctx context.Context, id uint) (*dto.DetailProductResponse, *dto.MessageResponse, error)
 	GetAllProductMenu(ctx context.Context, req dto.FilterRequest) ([]*dto.AllProductResponse, dto.Pagination, error)
+	DeleteProductMenu(ctx context.Context, id uint) (*dto.MessageResponse, error)
 }
 
 func NewProductMenuUsecase(repo repository.ProductMenuRepoInterface) ProductMenuUsecaseInterface {
@@ -141,4 +142,15 @@ func (b *ProductMenuUsecase) GetAllProductMenu(ctx context.Context, req dto.Filt
 		TotalRecords: total,
 	}
 	return productResponse, pagination, nil
+}
+
+// delete product menu
+func (b *ProductMenuUsecase) DeleteProductMenu(ctx context.Context, id uint) (*dto.MessageResponse, error) {
+
+	err := b.repo.DeleteProductMenu(ctx, uint(id))
+	if err != nil {
+		return nil, err
+	}
+
+	return &dto.MessageResponse{Message: "Berhasil delete data product menu"}, nil
 }

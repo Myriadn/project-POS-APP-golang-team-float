@@ -107,6 +107,7 @@ func wireProductMenu(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middl
 		ProductMenu.PATCH("/update/:id", authMw.RequirePermission("product:update"), ProductMenuAdaptor.UpdateProductMenu)
 		ProductMenu.GET("/:id", authMw.RequirePermission("product:read"), ProductMenuAdaptor.GetDetailProductMenu)
 		ProductMenu.GET("", authMw.RequirePermission("product:read"), ProductMenuAdaptor.GetAllStaffProductMenu)
+		ProductMenu.DELETE("/delete/:id", authMw.RequirePermission("product:delete"), ProductMenuAdaptor.DeleteProductMenu)
 
 	}
 }

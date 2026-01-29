@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"project-POS-APP-golang-team-float/internal/data/entity"
 	"project-POS-APP-golang-team-float/internal/dto"
 
@@ -16,6 +17,7 @@ type ProductMenuRepoInterface interface {
 	UpdateProductMenu(ctx context.Context, id uint, data map[string]interface{}) error
 	GetDetailProductMenu(ctx context.Context, id uint) (*entity.Product, error)
 	GetAllProductMenu(ctx context.Context, f dto.FilterRequest) ([]*entity.Product, int64, error)
+	DeleteProductMenu(ctx context.Context, id uint) error
 }
 
 func NewProductMenuRepo(db *gorm.DB) ProductMenuRepoInterface {
@@ -78,4 +80,16 @@ func (b *ProductMenuRepo) GetAllProductMenu(ctx context.Context, f dto.FilterReq
 	}
 
 	return product, totalItems, nil
+}
+
+// delete product menu
+func (b *ProductMenuRepo) DeleteProductMenu(ctx context.Context, id uint) error {
+	result := b.db.WithContext(ctx).Delete(&entity.Product{}, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return errors.New("data product menu tidak ditemukan")
+	}
+	return nil
 }

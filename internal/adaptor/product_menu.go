@@ -96,3 +96,22 @@ func (a *ProductMenuAdaptor) GetAllStaffProductMenu(c *gin.Context) {
 
 	utils.SuccessPaginationResponse(c, 200, "Berhasil mengambil daftar product", result, &pagination)
 }
+
+// request untuk delete category menu
+func (a *ProductMenuAdaptor) DeleteProductMenu(c *gin.Context) {
+	ctx := c.Request.Context()
+	idString := c.Param("id")
+	idInt, err := strconv.Atoi(idString)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "ID harus berupa angka"})
+		return
+	}
+	id := uint(idInt)
+	result, err := a.ProductMenuUsecase.DeleteProductMenu(ctx, id)
+	if err != nil {
+		utils.BadRequest(c, err.Error(), nil)
+		return
+	}
+
+	utils.Success(c, result.Message, nil)
+}
