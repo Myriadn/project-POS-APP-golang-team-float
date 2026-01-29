@@ -15,6 +15,7 @@ type WireConfig struct {
 	RepoSM           repository.StaffManagementRepoInterface
 	Category         repository.CategoryMenuRepoInterface
 	Product          repository.ProductMenuRepoInterface
+	ReportRepo       repository.ReportRepoInterface
 	EmailSvc         *email.SMTPService
 	OTPExpireMinutes int
 	SessionExpireHrs int
@@ -25,7 +26,7 @@ func Wiring(cfg WireConfig) *gin.Engine {
 	api := router.Group("/api")
 
 	// Create shared usecase and middleware
-	uc := usecase.NewUsecase(cfg.Repo, cfg.RepoSM, cfg.Category, cfg.Product, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
+	uc := usecase.NewUsecase(cfg.Repo, cfg.RepoSM, cfg.Category, cfg.Product, cfg.ReportRepo, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
 	authMw := middleware.NewAuthMiddleware(uc, uc) // uc 2 times because both implemented on middleware
 
 	wireAuth(api, uc, authMw)
@@ -33,6 +34,7 @@ func Wiring(cfg WireConfig) *gin.Engine {
 	wireStaffManagement(api, uc, authMw)
 	wireCategoryMenu(api, uc, authMw)
 	wireProductMenu(api, uc, authMw)
+	wireReport(api, uc, authMw)
 
 	return router
 }
@@ -109,5 +111,16 @@ func wireProductMenu(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middl
 		ProductMenu.GET("", authMw.RequirePermission("product:read"), ProductMenuAdaptor.GetAllStaffProductMenu)
 		ProductMenu.DELETE("/delete/:id", authMw.RequirePermission("product:delete"), ProductMenuAdaptor.DeleteProductMenu)
 
+	}
+}
+
+func wireReport(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
+	reportAdaptor := adaptor.NewReportAdaptor(uc.ReportUsecase)
+
+	reports := router.Group("/reports")
+	reports.Use(authMw.Authenticate())
+	{
+
+		reports.GET("/revenue", reportAdaptor.GetRevenueReport)
 	}
 }
