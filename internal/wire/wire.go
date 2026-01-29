@@ -15,6 +15,7 @@ type WireConfig struct {
 	RepoSM           repository.StaffManagementRepoInterface
 	Category         repository.CategoryMenuRepoInterface
 	Product          repository.ProductMenuRepoInterface
+	Profile          repository.ProfileRepoInterface
 	ReportRepo       repository.ReportRepoInterface
 	EmailSvc         *email.SMTPService
 	OTPExpireMinutes int
@@ -26,7 +27,7 @@ func Wiring(cfg WireConfig) *gin.Engine {
 	api := router.Group("/api")
 
 	// Create shared usecase and middleware
-	uc := usecase.NewUsecase(cfg.Repo, cfg.RepoSM, cfg.Category, cfg.Product, cfg.ReportRepo, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
+	uc := usecase.NewUsecase(cfg.Repo, cfg.RepoSM, cfg.Category, cfg.Product, cfg.Profile, cfg.ReportRepo, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
 	authMw := middleware.NewAuthMiddleware(uc, uc) // uc 2 times because both implemented on middleware
 
 	wireAuth(api, uc, authMw)
@@ -35,6 +36,7 @@ func Wiring(cfg WireConfig) *gin.Engine {
 	wireCategoryMenu(api, uc, authMw)
 	wireProductMenu(api, uc, authMw)
 	wireReport(api, uc, authMw)
+	wireProfile(api, uc, authMw)
 
 	return router
 }
@@ -122,5 +124,16 @@ func wireReport(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware
 	{
 
 		reports.GET("/revenue", reportAdaptor.GetRevenueReport)
+	}
+}
+
+func wireProfile(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
+	ProfileAdaptor := adaptor.NewProfileAdaptor(uc.ProfileUsecase)
+
+	Profile := router.Group("/profile")
+	Profile.Use(authMw.Authenticate())
+	{
+		Profile.PATCH("/update", ProfileAdaptor.UpdateProfile)
+
 	}
 }
