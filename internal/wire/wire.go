@@ -104,6 +104,7 @@ func wireProductMenu(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middl
 	ProductMenu.Use(authMw.Authenticate())
 	{
 		ProductMenu.POST("/create", authMw.RequirePermission("product:create"), ProductMenuAdaptor.CreateNewProductMenu)
+		ProductMenu.PATCH("/update/:id", authMw.RequirePermission("product:update"), ProductMenuAdaptor.UpdateProductMenu)
 
 	}
 }

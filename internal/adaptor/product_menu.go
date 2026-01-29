@@ -4,6 +4,7 @@ import (
 	"project-POS-APP-golang-team-float/internal/dto"
 	"project-POS-APP-golang-team-float/internal/usecase"
 	"project-POS-APP-golang-team-float/pkg/utils"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,6 +27,30 @@ func (a *ProductMenuAdaptor) CreateNewProductMenu(c *gin.Context) {
 	ctx := c.Request.Context()
 
 	result, err := a.ProductMenuUsecase.CreateNewProductUsecase(ctx, req)
+	if err != nil {
+		utils.BadRequest(c, err.Error(), nil)
+		return
+	}
+
+	utils.Success(c, result.Message, nil)
+}
+
+// request update product menu
+func (a *ProductMenuAdaptor) UpdateProductMenu(c *gin.Context) {
+	var req dto.UpdateProductMenuReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		utils.ValidationError(c, err.Error())
+		return
+	}
+	ctx := c.Request.Context()
+	idString := c.Param("id")
+	idInt, err := strconv.Atoi(idString)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "ID harus berupa angka"})
+		return
+	}
+	id := uint(idInt)
+	result, err := a.ProductMenuUsecase.UpdateProductMenuUsecase(ctx, id, req)
 	if err != nil {
 		utils.BadRequest(c, err.Error(), nil)
 		return
