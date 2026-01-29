@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"project-POS-APP-golang-team-float/internal/data/entity"
+	"project-POS-APP-golang-team-float/internal/dto"
 
 	"gorm.io/gorm"
 )
@@ -14,6 +15,7 @@ type ProductMenuRepoInterface interface {
 	CreateNewProduct(ctx context.Context, product *entity.Product) error
 	UpdateProductMenu(ctx context.Context, id uint, data map[string]interface{}) error
 	GetDetailProductMenu(ctx context.Context, id uint) (*entity.Product, error)
+	GetAllProductMenu(ctx context.Context, f dto.FilterRequest) ([]*entity.Product, int64, error)
 }
 
 func NewProductMenuRepo(db *gorm.DB) ProductMenuRepoInterface {
@@ -48,4 +50,32 @@ func (b *ProductMenuRepo) GetDetailProductMenu(ctx context.Context, id uint) (*e
 		return nil, result.Error
 	}
 	return &product, nil
+}
+
+// mendapatkan semua product
+func (b *ProductMenuRepo) GetAllProductMenu(ctx context.Context, f dto.FilterRequest) ([]*entity.Product, int64, error) {
+	var product []*entity.Product
+	var totalItems int64
+
+	query := b.db.WithContext(ctx).Model(&entity.Product{})
+
+	if err := query.Count(&totalItems).Error; err != nil {
+		return nil, 0, err
+	}
+
+	offset := (f.Page - 1) * f.Limit
+	if f.MenuType != "" {
+		query = query.Where("products.menu_type ILIKE ?", "%"+f.MenuType+"%")
+	}
+
+	result := query.Preload("Category").
+		Limit(f.Limit).
+		Offset(offset).
+		Find(&product)
+
+	if result.Error != nil {
+		return nil, 0, result.Error
+	}
+
+	return product, totalItems, nil
 }

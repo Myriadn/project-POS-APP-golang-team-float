@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"math"
 	"project-POS-APP-golang-team-float/internal/data/entity"
 	"project-POS-APP-golang-team-float/internal/data/repository"
 	"project-POS-APP-golang-team-float/internal/dto"
@@ -15,6 +16,7 @@ type ProductMenuUsecaseInterface interface {
 	CreateNewProductUsecase(ctx context.Context, req dto.CreateNewProductMenuReq) (*dto.MessageResponse, error)
 	UpdateProductMenuUsecase(ctx context.Context, id uint, req dto.UpdateProductMenuReq) (*dto.MessageResponse, error)
 	GetDetailProductMenu(ctx context.Context, id uint) (*dto.DetailProductResponse, *dto.MessageResponse, error)
+	GetAllProductMenu(ctx context.Context, req dto.FilterRequest) ([]*dto.AllProductResponse, dto.Pagination, error)
 }
 
 func NewProductMenuUsecase(repo repository.ProductMenuRepoInterface) ProductMenuUsecaseInterface {
@@ -101,4 +103,42 @@ func (b *ProductMenuUsecase) GetDetailProductMenu(ctx context.Context, id uint) 
 		Availability: product.Availability,
 	}
 	return resp, &dto.MessageResponse{Message: "berhasil mengambil detail product menu"}, nil
+}
+
+// logic bisnis untuk mengambil semua product menu
+func (b *ProductMenuUsecase) GetAllProductMenu(ctx context.Context, req dto.FilterRequest) ([]*dto.AllProductResponse, dto.Pagination, error) {
+	if req.Page == 0 {
+		req.Page = 1
+	}
+	if req.Limit == 0 {
+		req.Limit = 6
+	}
+
+	product, total, err := b.repo.GetAllProductMenu(ctx, req)
+	if err != nil {
+		return nil, dto.Pagination{}, err
+	}
+
+	var productResponse []*dto.AllProductResponse
+	for _, t := range product {
+		row := dto.AllProductResponse{
+			ID:           t.ID,
+			Name:         t.Name,
+			Price:        t.Price,
+			Stock:        t.Stock,
+			CategotyName: t.Category.Name,
+			Image:        t.Image,
+			Availability: t.Availability,
+		}
+		productResponse = append(productResponse, &row)
+	}
+	totalPages := int(math.Ceil(float64(total) / float64(req.Limit)))
+
+	pagination := dto.Pagination{
+		CurrentPage:  req.Page,
+		Limit:        req.Limit,
+		TotalPages:   totalPages,
+		TotalRecords: total,
+	}
+	return productResponse, pagination, nil
 }

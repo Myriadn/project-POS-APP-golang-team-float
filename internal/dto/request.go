@@ -56,9 +56,10 @@ type UpdateStaffManagementReq struct {
 }
 
 type FilterRequest struct {
-	Page   int    `form:"page"`
-	Limit  int    `form:"limit"`
-	SortBy string `form:"sort_by"`
+	Page     int    `form:"page"`
+	Limit    int    `form:"limit"`
+	SortBy   string `form:"sort_by"`
+	MenuType string `form:"menu_type"`
 }
 
 // request untuk membuat category menu

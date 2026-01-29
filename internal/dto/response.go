@@ -90,3 +90,14 @@ type DetailProductResponse struct {
 	Image        string  `json:"image"`
 	Availability string  `json:"availability"`
 }
+
+// all product menu
+type AllProductResponse struct {
+	ID           uint    `json:"id"`
+	Name         string  `json:"name"`
+	Price        float64 `json:"price"`
+	Stock        int     `json:"stock"`
+	CategotyName string  `json:"category_name"`
+	Image        string  `json:"image"`
+	Availability string  `json:"availability"`
+}

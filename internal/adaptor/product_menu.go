@@ -77,3 +77,22 @@ func (a *ProductMenuAdaptor) GetDetailProductMenu(c *gin.Context) {
 	}
 	utils.SuccessResponse(c, 200, message.Message, user)
 }
+
+func (a *ProductMenuAdaptor) GetAllStaffProductMenu(c *gin.Context) {
+	ctx := c.Request.Context()
+	MenuType := c.Query("menu_type")
+	req := dto.FilterRequest{
+		MenuType: MenuType,
+	}
+	if err := c.ShouldBindQuery(&req); err != nil {
+		utils.BadRequest(c, "Parameter salah", nil)
+		return
+	}
+	result, pagination, err := a.ProductMenuUsecase.GetAllProductMenu(ctx, req)
+	if err != nil {
+		utils.BadRequest(c, err.Error(), nil)
+		return
+	}
+
+	utils.SuccessPaginationResponse(c, 200, "Berhasil mengambil daftar product", result, &pagination)
+}
