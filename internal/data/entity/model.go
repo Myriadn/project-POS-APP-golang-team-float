@@ -11,6 +11,7 @@ type Category struct {
 	Icon        string    `gorm:"size:500" json:"icon"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
+	Products    []Product `gorm:"foreignKey:CategoryID"`
 }
 
 func (Category) TableName() string {

@@ -20,7 +20,7 @@ type StaffManagementUsecaseInterface interface {
 	UpdateStaffManagementUsecase(ctx context.Context, id uint, req dto.UpdateStaffManagementReq) (*dto.MessageResponse, error)
 	GetDetailStaffManagement(ctx context.Context, id uint) (*dto.DetailStaffResponse, *dto.MessageResponse, error)
 	DeleteStaffManagementUsecase(ctx context.Context, id uint) (*dto.MessageResponse, error)
-	GetAllStaffManagement(ctx context.Context, req dto.GetStaffManagementFilterRequest) ([]*dto.GetlAllStaffResponse, dto.Pagination, error)
+	GetAllStaffManagement(ctx context.Context, req dto.FilterRequest) ([]*dto.GetlAllStaffResponse, dto.Pagination, error)
 }
 
 func NewStaffManagementUsecase(repo repository.StaffManagementRepoInterface) StaffManagementUsecaseInterface {
@@ -150,7 +150,7 @@ func (b *StaffManagementUsecase) DeleteStaffManagementUsecase(ctx context.Contex
 	return &dto.MessageResponse{Message: "Berhasil delete data staff"}, nil
 }
 
-func (b *StaffManagementUsecase) GetAllStaffManagement(ctx context.Context, req dto.GetStaffManagementFilterRequest) ([]*dto.GetlAllStaffResponse, dto.Pagination, error) {
+func (b *StaffManagementUsecase) GetAllStaffManagement(ctx context.Context, req dto.FilterRequest) ([]*dto.GetlAllStaffResponse, dto.Pagination, error) {
 	if req.Page == 0 {
 		req.Page = 1
 	}

@@ -11,7 +11,7 @@ type MockStaffRepo struct {
 	UpdateFn    func(ctx context.Context, id uint, data map[string]interface{}) error
 	GetDetailFn func(ctx context.Context, id uint) (*entity.User, error)
 	DeleteFn    func(ctx context.Context, id uint) error
-	GetAllFn    func(ctx context.Context, f dto.GetStaffManagementFilterRequest) ([]*entity.User, int64, error)
+	GetAllFn    func(ctx context.Context, f dto.FilterRequest) ([]*entity.User, int64, error)
 }
 
 func (m *MockStaffRepo) CreateNewStaffManagement(ctx context.Context, user *entity.User) error {
@@ -29,6 +29,6 @@ func (m *MockStaffRepo) DeleteStaffManagement(ctx context.Context, id uint) erro
 	return m.DeleteFn(ctx, id)
 }
 
-func (m *MockStaffRepo) GetAllStaffManagement(ctx context.Context, f dto.GetStaffManagementFilterRequest) ([]*entity.User, int64, error) {
+func (m *MockStaffRepo) GetAllStaffManagement(ctx context.Context, f dto.FilterRequest) ([]*entity.User, int64, error) {
 	return m.GetAllFn(ctx, f)
 }

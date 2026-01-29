@@ -60,7 +60,6 @@ func seedRoles(db *gorm.DB) error {
 
 func seedCategories(db *gorm.DB) error {
 	categories := []entity.Category{
-		{Name: "All", Description: "Semua kategori menu"},
 		{Name: "Pizza", Description: "Berbagai macam pizza", Icon: "/icons/pizza.png"},
 		{Name: "Burger", Description: "Burger dengan berbagai pilihan", Icon: "/icons/burger.png"},
 		{Name: "Chicken", Description: "Ayam goreng dan panggang", Icon: "/icons/chicken.png"},
@@ -235,6 +234,10 @@ func seedPermission(db *gorm.DB) error {
 		{ID: 2, Code: "user:create", Description: "Menambahkan user baru"},
 		{ID: 3, Code: "user:update", Description: "Mengubah data user"},
 		{ID: 4, Code: "user:delete", Description: "Menghapus user (soft delete)"},
+		{ID: 5, Code: "category:create", Description: "Menambahkan category menu baru"},
+		{ID: 6, Code: "category:update", Description: "mengubah data category menu"},
+		{ID: 7, Code: "category:read", Description: "Melihat daftar dan detail category menu"},
+		{ID: 8, Code: "category:delete", Description: "menghapus category menu"},
 	}
 	for _, permission := range permissions {
 		var existing entity.Permission
@@ -363,6 +366,14 @@ func seedRolePermissions(db *gorm.DB) error {
 		{RoleID: 2, PermissionID: 2},
 		{RoleID: 2, PermissionID: 3},
 		{RoleID: 2, PermissionID: 4},
+		{RoleID: 1, PermissionID: 5},
+		{RoleID: 2, PermissionID: 5},
+		{RoleID: 1, PermissionID: 6},
+		{RoleID: 2, PermissionID: 6},
+		{RoleID: 1, PermissionID: 7},
+		{RoleID: 2, PermissionID: 7},
+		{RoleID: 1, PermissionID: 8},
+		{RoleID: 2, PermissionID: 8},
 	}
 	for _, RolePermission := range RolePermissions {
 		var existing entity.RolePermisson

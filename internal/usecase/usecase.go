@@ -8,6 +8,7 @@ import (
 type Usecase struct {
 	repo                   *repository.Repository
 	StaffManagementUsecase StaffManagementUsecaseInterface
+	CategoryMenuUsecase    CategoryMenuUsecaseInterface
 	emailSvc               EmailService
 	otpExpireMinutes       int
 	sessionExpireHrs       int
@@ -18,13 +19,14 @@ type EmailService interface {
 	SendPasswordResetOTP(to, otp string) error
 }
 
-func NewUsecase(repo *repository.Repository, repoSM repository.StaffManagementRepoInterface, emailSvc EmailService, otpExpireMinutes, sessionExpireHrs int) *Usecase {
+func NewUsecase(repo *repository.Repository, repoSM repository.StaffManagementRepoInterface, Category repository.CategoryMenuRepoInterface, emailSvc EmailService, otpExpireMinutes, sessionExpireHrs int) *Usecase {
 	return &Usecase{
 		repo:                   repo,
 		emailSvc:               emailSvc,
 		otpExpireMinutes:       otpExpireMinutes,
 		sessionExpireHrs:       sessionExpireHrs,
 		StaffManagementUsecase: NewStaffManagementUsecase(repoSM),
+		CategoryMenuUsecase:    NewCategoryMenuUsecase(Category),
 	}
 }
 

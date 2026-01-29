@@ -55,8 +55,22 @@ type UpdateStaffManagementReq struct {
 	AdditionalDetails string     `json:"additional_details" binding:"omitempty"`
 }
 
-type GetStaffManagementFilterRequest struct {
+type FilterRequest struct {
 	Page   int    `form:"page"`
 	Limit  int    `form:"limit"`
 	SortBy string `form:"sort_by"`
+}
+
+// request untuk membuat category menu
+type CreateNewCategoryMenuReq struct {
+	Name        string `json:"name" binding:"required,min=3,max=100"`
+	Description string `json:"description" binding:"required,min=3,max=255"`
+	Icon        string `json:"icon" binding:"required,min=3,max=500"`
+}
+
+// request untuk membuat category menu
+type UpdateCategoryMenuReq struct {
+	Name        string `json:"name" binding:"omitempty,min=3,max=100"`
+	Description string `json:"description" binding:"omitempty,min=3,max=255"`
+	Icon        string `json:"icon" binding:"omitempty,min=3,max=500"`
 }
