@@ -38,6 +38,9 @@ func Seed(db *gorm.DB) error {
 	if err := seedRolePermissions(db); err != nil {
 		return err
 	}
+	if err := seedUserPermissions(db); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -391,6 +394,22 @@ func seedRolePermissions(db *gorm.DB) error {
 		var existing entity.RolePermisson
 		if db.Where("role_id = ? AND permission_id =?", RolePermission.RoleID, RolePermission.PermissionID).First(&existing).RowsAffected == 0 {
 			if err := db.Create(&RolePermission).Error; err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+// user permission
+func seedUserPermissions(db *gorm.DB) error {
+	UserPermissions := []entity.UserPermission{
+		{UserID: 1, PermissionID: 1},
+	}
+	for _, userPermission := range UserPermissions {
+		var existing entity.UserPermission
+		if db.Where("user_id = ? AND permission_id =?", userPermission.UserID, userPermission.PermissionID).First(&existing).RowsAffected == 0 {
+			if err := db.Create(&userPermission).Error; err != nil {
 				return err
 			}
 		}
