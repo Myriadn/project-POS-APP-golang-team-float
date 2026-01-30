@@ -81,8 +81,19 @@ func (a *ProductMenuAdaptor) GetDetailProductMenu(c *gin.Context) {
 func (a *ProductMenuAdaptor) GetAllStaffProductMenu(c *gin.Context) {
 	ctx := c.Request.Context()
 	MenuType := c.Query("menu_type")
+	Stock := c.Query("stock")
+	Status := c.Query("status")
+	Value := c.Query("value")
+	PriceMin := c.Query("price_min")
+	PriceMax := c.Query("price_max")
+
 	req := dto.FilterRequest{
 		MenuType: MenuType,
+		Stock:    Stock,
+		Status:   Status,
+		Value:    Value,
+		PriceMin: PriceMin,
+		PriceMax: PriceMax,
 	}
 	if err := c.ShouldBindQuery(&req); err != nil {
 		utils.BadRequest(c, "Parameter salah", nil)

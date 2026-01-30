@@ -110,6 +110,8 @@ func (b *ProductMenuUsecase) GetDetailProductMenu(ctx context.Context, id uint) 
 		CategotyName: product.Category.Name,
 		Image:        product.Image,
 		Availability: product.Availability,
+		Status:       product.Status,
+		Unit:         product.Unit,
 	}
 	return resp, &dto.MessageResponse{Message: "berhasil mengambil detail product menu"}, nil
 }
@@ -138,6 +140,7 @@ func (b *ProductMenuUsecase) GetAllProductMenu(ctx context.Context, req dto.Filt
 			CategotyName: t.Category.Name,
 			Image:        t.Image,
 			Availability: t.Availability,
+			Status:       t.Status,
 		}
 		productResponse = append(productResponse, &row)
 	}

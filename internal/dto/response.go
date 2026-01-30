@@ -89,6 +89,8 @@ type DetailProductResponse struct {
 	CategotyName string  `json:"category_name"`
 	Image        string  `json:"image"`
 	Availability string  `json:"availability"`
+	Status       string  `json:"status"`
+	Unit         string  `json:"unit"`
 }
 
 // all product menu
@@ -100,4 +102,5 @@ type AllProductResponse struct {
 	CategotyName string  `json:"category_name"`
 	Image        string  `json:"image"`
 	Availability string  `json:"availability"`
+	Status       string  `json:"status"`
 }

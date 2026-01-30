@@ -69,6 +69,27 @@ func (b *ProductMenuRepo) GetAllProductMenu(ctx context.Context, f dto.FilterReq
 	if f.MenuType != "" {
 		query = query.Where("products.menu_type ILIKE ?", "%"+f.MenuType+"%")
 	}
+	if f.Category != "" {
+		query = query.Where("products.category ILIKE ?", "%"+f.Category+"%")
+	}
+	if f.Status != "" {
+		query = query.Where("products.status ILIKE ?", "%"+f.Status+"%")
+	}
+	if f.Stock != "" {
+		query = query.Where("products.availability ILIKE ?", "%"+f.Stock+"%")
+	}
+	if f.Value != "" {
+		query = query.Where("products.unit ILIKE ?", "%"+f.Value+"%")
+	}
+	if f.Piece != "" {
+		query = query.Where("products.stock = ?", f.Piece)
+	}
+	if f.PriceMin != "" {
+		query = query.Where("products.price >= ?", f.PriceMin)
+	}
+	if f.PriceMax != "" {
+		query = query.Where("products.price <= ?", f.PriceMax)
+	}
 
 	result := query.Preload("Category").
 		Limit(f.Limit).

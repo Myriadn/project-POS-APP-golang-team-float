@@ -60,6 +60,13 @@ type FilterRequest struct {
 	Limit    int    `form:"limit"`
 	SortBy   string `form:"sort_by"`
 	MenuType string `form:"menu_type"`
+	Category string `form:"category"`
+	Status   string `form:"status"`
+	Stock    string `form:"stock"`
+	Value    string `form:"value"`
+	Piece    string `form:"piece"`
+	PriceMin string `form:"price_min"`
+	PriceMax string `form:"price_max"`
 }
 
 // request untuk membuat category menu
