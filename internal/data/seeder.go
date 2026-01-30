@@ -245,6 +245,7 @@ func seedPermission(db *gorm.DB) error {
 		{ID: 10, Code: "product:update", Description: "mengubah data product menu"},
 		{ID: 11, Code: "product:read", Description: "Melihat daftar dan detail product menu"},
 		{ID: 12, Code: "product:delete", Description: "menghapus product menu"},
+		{ID: 13, Code: "manage-accsess", Description: "manage akses admin yang di lakukan super admin"},
 	}
 	for _, permission := range permissions {
 		var existing entity.Permission
@@ -389,6 +390,7 @@ func seedRolePermissions(db *gorm.DB) error {
 		{RoleID: 2, PermissionID: 11},
 		{RoleID: 1, PermissionID: 12},
 		{RoleID: 2, PermissionID: 12},
+		{RoleID: 1, PermissionID: 13},
 	}
 	for _, RolePermission := range RolePermissions {
 		var existing entity.RolePermisson
@@ -403,9 +405,7 @@ func seedRolePermissions(db *gorm.DB) error {
 
 // user permission
 func seedUserPermissions(db *gorm.DB) error {
-	UserPermissions := []entity.UserPermission{
-		{UserID: 1, PermissionID: 1},
-	}
+	UserPermissions := []entity.UserPermission{}
 	for _, userPermission := range UserPermissions {
 		var existing entity.UserPermission
 		if db.Where("user_id = ? AND permission_id =?", userPermission.UserID, userPermission.PermissionID).First(&existing).RowsAffected == 0 {

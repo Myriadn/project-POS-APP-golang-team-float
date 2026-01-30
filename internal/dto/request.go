@@ -119,3 +119,8 @@ type UpdateProfileReq struct {
 	Address         string `json:"address"`
 	ProfilePicture  string `json:"profile_picture" binding:"omitempty"`
 }
+
+// request pemblokiran  akses
+type AccsessReq struct {
+	PermissionID []uint `json:"permission_id" binding:"required,min=0"`
+}

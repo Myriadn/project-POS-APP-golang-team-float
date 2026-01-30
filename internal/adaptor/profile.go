@@ -70,3 +70,28 @@ func (a *ProfileAdaptor) GetAllAdminUser(c *gin.Context) {
 
 	utils.SuccessPaginationResponse(c, 200, "Berhasil mengambil semua daftar admin user", result, &pagination)
 }
+
+// request blokir accsess
+func (a *ProfileAdaptor) UpdateAccsessControl(c *gin.Context) {
+	var req dto.AccsessReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		utils.ValidationError(c, err.Error())
+		return
+	}
+	idString := c.Param("id")
+	idInt, err := strconv.Atoi(idString)
+	if err != nil {
+		c.JSON(400, gin.H{"error": "ID harus berupa angka"})
+		return
+	}
+	id := uint(idInt)
+	ctx := c.Request.Context()
+
+	result, err := a.ProfileUsecase.UpdateAccsessControl(ctx, id, req)
+	if err != nil {
+		utils.BadRequest(c, err.Error(), nil)
+		return
+	}
+
+	utils.Success(c, result.Message, nil)
+}
