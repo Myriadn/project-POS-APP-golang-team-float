@@ -64,3 +64,48 @@ type PaginationData struct {
 	Items any         `json:"items"`
 	Meta  *Pagination `json:"meta"`
 }
+
+// detail category menu
+type DetailCategoryResponse struct {
+	ID          uint   `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Icon        string `json:"icon"`
+}
+type AllCategoryMenuResponse struct {
+	ID         uint   `json:"id"`
+	Name       string `json:"name"`
+	TotalItems int64  `json:"total_items"`
+	Icon       string `json:"icon"`
+}
+
+// detail product menu
+type DetailProductResponse struct {
+	ID           uint    `json:"id"`
+	Name         string  `json:"name"`
+	Description  string  `json:"description"`
+	Price        float64 `json:"price"`
+	Stock        int     `json:"stock"`
+	CategotyName string  `json:"category_name"`
+	Image        string  `json:"image"`
+	Availability string  `json:"availability"`
+}
+
+// all product menu
+type AllProductResponse struct {
+	ID           uint    `json:"id"`
+	Name         string  `json:"name"`
+	Price        float64 `json:"price"`
+	Stock        int     `json:"stock"`
+	CategotyName string  `json:"category_name"`
+	Image        string  `json:"image"`
+	Availability string  `json:"availability"`
+}
+
+// get admin staff
+type GetlAllAdminResponse struct {
+	ID       uint   `json:"id"`
+	Email    string `json:"email"`
+	FullName string `json:"full_name"`
+	RoleName string `json:"role_name"`
+}

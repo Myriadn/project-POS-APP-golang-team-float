@@ -55,8 +55,56 @@ type UpdateStaffManagementReq struct {
 	AdditionalDetails string     `json:"additional_details" binding:"omitempty"`
 }
 
-type GetStaffManagementFilterRequest struct {
-	Page   int    `form:"page"`
-	Limit  int    `form:"limit"`
-	SortBy string `form:"sort_by"`
+type FilterRequest struct {
+	Page     int    `form:"page"`
+	Limit    int    `form:"limit"`
+	SortBy   string `form:"sort_by"`
+	MenuType string `form:"menu_type"`
+}
+
+// request untuk membuat category menu
+type CreateNewCategoryMenuReq struct {
+	Name        string `json:"name" binding:"required,min=3,max=100"`
+	Description string `json:"description" binding:"required,min=3,max=255"`
+	Icon        string `json:"icon" binding:"required,min=3,max=500"`
+}
+
+// request untuk membuat category menu
+type UpdateCategoryMenuReq struct {
+	Name        string `json:"name" binding:"omitempty,min=3,max=100"`
+	Description string `json:"description" binding:"omitempty,min=3,max=255"`
+	Icon        string `json:"icon" binding:"omitempty,min=3,max=500"`
+}
+
+// request untuk membuat product menu
+type CreateNewProductMenuReq struct {
+	CategotyID   uint    `json:"category_id" binding:"required,min=1"`
+	Name         string  `json:"name" binding:"required,min=3,max=100"`
+	Description  string  `json:"description" binding:"required,min=3,max=255"`
+	Stock        int     `json:"stock" binding:"required,min=0"`
+	Image        string  `json:"image" binding:"required,min=3,max=500"`
+	Price        float64 `json:"price" binding:"required"`
+	Availability string  `json:"availability" binding:"required"`
+	MenuType     string  `json:"menu_type" binding:"required,min=3,max=100"`
+}
+
+// request untuk mengedit product
+type UpdateProductMenuReq struct {
+	CategotyID   uint    `json:"category_id" binding:"omitempty,min=1"`
+	Name         string  `json:"name" binding:"omitempty,min=3,max=100"`
+	Description  string  `json:"description" binding:"omitempty,min=3,max=255"`
+	Stock        int     `json:"stock" binding:"omitempty,min=0"`
+	Image        string  `json:"image" binding:"omitempty,min=3,max=500"`
+	Price        float64 `json:"price" binding:"omitempty"`
+	Availability string  `json:"availability" binding:"omitempty"`
+	MenuType     string  `json:"menu_type" binding:"omitempty,min=3,max=100"`
+}
+
+type UpdateProfileReq struct {
+	Email           string `json:"email" binding:"omitempty,email"`
+	Username        string `json:"username" binding:"omitempty,min=3,max=20"`
+	NewPassword     string `json:"new_password" binding:"omitempty,min=6"`
+	ConfirmPassword string `json:"confirm_password" binding:"omitempty,min=6"`
+	Address         string `json:"address"`
+	ProfilePicture  string `json:"profile_picture" binding:"omitempty"`
 }

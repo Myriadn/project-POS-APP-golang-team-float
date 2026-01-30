@@ -96,7 +96,7 @@ func (a *StaffManagementAdaptor) DeleteStaffManagement(c *gin.Context) {
 func (a *StaffManagementAdaptor) GetAllStaffManagement(c *gin.Context) {
 	ctx := c.Request.Context()
 	sortBy := c.Query("sort_by")
-	req := dto.GetStaffManagementFilterRequest{
+	req := dto.FilterRequest{
 		SortBy: sortBy,
 	}
 	if err := c.ShouldBindQuery(&req); err != nil {

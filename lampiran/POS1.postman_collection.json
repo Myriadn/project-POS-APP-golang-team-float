@@ -1,0 +1,284 @@
+{
+	"info": {
+		"_postman_id": "565cd8d3-b3b2-4dec-97a0-29858f2cdc07",
+		"name": "POS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50874533",
+		"_collection_link": "https://julianda913-4171555.postman.co/workspace/Julianda-putra-Mansur's-Workspa~f5f10bd9-a4df-4395-8cef-9964d2123536/collection/50874533-565cd8d3-b3b2-4dec-97a0-29858f2cdc07?action=share&source=collection_link&creator=50874533"
+	},
+	"item": [
+		{
+			"name": "staff-management",
+			"item": [
+				{
+					"name": "create-staff",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"cakra@gmail.com\",\n  \"username\": \"Cakra\",\n  \"password\": \"halo123\",\n  \"full_name\": \"Cakra Candra\",\n  \"phone\": \"123456781234\",\n  \"role_id\": 3,\n  \"profile_picture\": \"profile picture\",\n  \"salary\": 70000000,\n  \"date_of_birth\": \"1999-08-29T00:00:00Z\",\n  \"shift_start\": \"09:00\",\n  \"shift_end\": \"16:00\",\n  \"address\": \"jalan buah\",\n  \"additional_details\": \"additional details\",\n  \"is_active\": true\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/staff-management/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"staff-management",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-staff",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/staff-management/delete/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"staff-management",
+								"delete",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-staff",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "  {\"shift_start\": \"08:00\",\n  \"shift_end\": \"16:00\",\n  \"address\": \"jalan buah\"\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/staff-management/update/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"staff-management",
+								"update",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "detail-staff",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"superadmin@posapp.com\",\n    \"password\":\"Admin@123\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/staff-management/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"staff-management",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all-staff",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/staff-management/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"staff-management",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "category-menu",
+			"item": [
+				{
+					"name": "create-category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\":\"fruit\",\n  \"description\":\"this  fruit\",\n  \"icon\":\"http.gambar.png\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/category-menu/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"category-menu",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-category",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\":\"this s a fruit right?\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/category-menu/update/10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"category-menu",
+								"update",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "detail-category",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\":\"this is a junck food\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/category-menu/10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"category-menu",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-all-category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/category-menu",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"category-menu"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/category-menu/delete/10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"category-menu",
+								"delete",
+								"10"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

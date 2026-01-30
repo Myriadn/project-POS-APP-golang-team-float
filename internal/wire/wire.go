@@ -13,6 +13,10 @@ import (
 type WireConfig struct {
 	Repo             *repository.Repository
 	RepoSM           repository.StaffManagementRepoInterface
+	Category         repository.CategoryMenuRepoInterface
+	Product          repository.ProductMenuRepoInterface
+	Profile          repository.ProfileRepoInterface
+	ReportRepo       repository.ReportRepoInterface
 	EmailSvc         *email.SMTPService
 	OTPExpireMinutes int
 	SessionExpireHrs int
@@ -23,13 +27,16 @@ func Wiring(cfg WireConfig) *gin.Engine {
 	api := router.Group("/api")
 
 	// Create shared usecase and middleware
-	uc := usecase.NewUsecase(cfg.Repo, cfg.RepoSM, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
+	uc := usecase.NewUsecase(cfg.Repo, cfg.RepoSM, cfg.Category, cfg.Product, cfg.Profile, cfg.ReportRepo, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
 	authMw := middleware.NewAuthMiddleware(uc, uc) // uc 2 times because both implemented on middleware
 
 	wireAuth(api, uc, authMw)
 	wireDashboard(api, uc, authMw)
 	wireStaffManagement(api, uc, authMw)
-	wireOrders(api, uc, authMw)
+	wireCategoryMenu(api, uc, authMw)
+	wireProductMenu(api, uc, authMw)
+	wireReport(api, uc, authMw)
+	wireProfile(api, uc, authMw)
 
 	return router
 }
@@ -86,12 +93,67 @@ func wireStaffManagement(router *gin.RouterGroup, uc *usecase.Usecase, authMw *m
 
 	staffManagement := router.Group("/staff-management")
 	staffManagement.Use(authMw.Authenticate())
-	staffManagement.Use(authMw.RequirePermission("manage_staff"))
 	{
-		staffManagement.POST("/create", staffManagementAdaptor.CreateNewStaffManagement)
-		staffManagement.PATCH("/update/:id", staffManagementAdaptor.UpdateStaffManagement)
-		staffManagement.GET("/:id", staffManagementAdaptor.GetDetailStaffManagement)
-		staffManagement.GET("", staffManagementAdaptor.GetAllStaffManagement)
-		staffManagement.DELETE("/delete/:id", staffManagementAdaptor.DeleteStaffManagement)
+		staffManagement.POST("/create", authMw.RequirePermission("user:create"), staffManagementAdaptor.CreateNewStaffManagement)
+		staffManagement.PATCH("/update/:id", authMw.RequirePermission("user:update"), staffManagementAdaptor.UpdateStaffManagement)
+		staffManagement.GET("/:id", authMw.RequirePermission("user:read"), staffManagementAdaptor.GetDetailStaffManagement)
+		staffManagement.GET("", authMw.RequirePermission("user:read"), staffManagementAdaptor.GetAllStaffManagement)
+		staffManagement.DELETE("/delete/:id", authMw.RequirePermission("user:delete"), staffManagementAdaptor.DeleteStaffManagement)
+	}
+}
+
+func wireCategoryMenu(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
+	CategoryMenuAdaptor := adaptor.NewCategoryMenuAdaptor(uc.CategoryMenuUsecase)
+
+	CategoryMenu := router.Group("/category-menu")
+	CategoryMenu.Use(authMw.Authenticate())
+	{
+		CategoryMenu.POST("/create", authMw.RequirePermission("category:create"), CategoryMenuAdaptor.CreateNewCategoryMenu)
+		CategoryMenu.PATCH("/update/:id", authMw.RequirePermission("category:update"), CategoryMenuAdaptor.UpdateCategoryMenu)
+		CategoryMenu.GET("/:id", authMw.RequirePermission("category:read"), CategoryMenuAdaptor.GetDetailCategoryMenu)
+		CategoryMenu.GET("", authMw.RequirePermission("category:read"), CategoryMenuAdaptor.GetAllCategoryMenu)
+		CategoryMenu.DELETE("/delete/:id", authMw.RequirePermission("category:delete"), CategoryMenuAdaptor.DeleteCategoryMenu)
+
+	}
+}
+
+func wireProductMenu(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
+	ProductMenuAdaptor := adaptor.NewProductMenuAdaptor(uc.ProductMenuUsecase)
+
+	ProductMenu := router.Group("/product-menu")
+	ProductMenu.Use(authMw.Authenticate())
+	{
+		ProductMenu.POST("/create", authMw.RequirePermission("product:create"), ProductMenuAdaptor.CreateNewProductMenu)
+		ProductMenu.PATCH("/update/:id", authMw.RequirePermission("product:update"), ProductMenuAdaptor.UpdateProductMenu)
+		ProductMenu.GET("/:id", authMw.RequirePermission("product:read"), ProductMenuAdaptor.GetDetailProductMenu)
+		ProductMenu.GET("", authMw.RequirePermission("product:read"), ProductMenuAdaptor.GetAllStaffProductMenu)
+		ProductMenu.DELETE("/delete/:id", authMw.RequirePermission("product:delete"), ProductMenuAdaptor.DeleteProductMenu)
+
+	}
+}
+
+func wireReport(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
+	reportAdaptor := adaptor.NewReportAdaptor(uc.ReportUsecase)
+
+	reports := router.Group("/reports")
+	reports.Use(authMw.Authenticate())
+	{
+
+		reports.GET("/revenue", reportAdaptor.GetRevenueReport)
+	}
+}
+
+func wireProfile(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
+	ProfileAdaptor := adaptor.NewProfileAdaptor(uc.ProfileUsecase)
+
+	Profile := router.Group("/profile")
+	Profile.Use(authMw.Authenticate())
+	{
+		Profile.PATCH("/update", ProfileAdaptor.UpdateProfile)
+	}
+	ManageAccsess := router.Group("/manage-accsess")
+	ManageAccsess.Use(authMw.Authenticate())
+	{
+		ManageAccsess.GET("/admin", ProfileAdaptor.GetAllAdminUser)
 	}
 }

@@ -27,7 +27,9 @@
                   "    pm.expect(jsonData.message).to.include(\"OTP\");",
                   "});"
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -41,12 +43,17 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"superadmin@posapp.com\",\n    \"password\": \"Admin@123\"\n}"
+              "raw": "{\n    \"email\": \"manaska129@gmail.com\",\n    \"password\": \"Admin@123\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/auth/login",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "login"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             },
             "description": "Login with email and password. OTP will be sent to email."
           },
@@ -87,12 +94,17 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"superadmin@posapp.com\",\n    \"otp\": \"4331\"\n}"
+              "raw": "{\n    \"email\": \"manaska129@gmail.com\",\n    \"otp\": \"8835\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/auth/verify-otp",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "verify-otp"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "verify-otp"
+              ]
             },
             "description": "Verify OTP received via email. Returns auth token."
           },
@@ -128,12 +140,17 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"superadmin@posapp.com\"\n}"
+              "raw": "{\n    \"email\": \"superadmin@cosypos.com\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/auth/check-email",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "check-email"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "check-email"
+              ]
             },
             "description": "Check if email exists and send password reset OTP."
           },
@@ -169,12 +186,17 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"superadmin@posapp.com\",\n    \"otp\": \"1234\",\n    \"new_password\": \"NewAdmin@123\"\n}"
+              "raw": "{\n    \"email\": \"superadmin@cosypos.com\",\n    \"otp\": \"1234\",\n    \"new_password\": \"NewAdmin@123\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/auth/reset-password",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "reset-password"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
             },
             "description": "Reset password using OTP."
           },
@@ -196,7 +218,9 @@
                   "    pm.expect(jsonData.success).to.eql(true);",
                   "});"
                 ],
-                "type": "text/javascript"
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -206,16 +230,17 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
               }
             ],
             "url": {
               "raw": "{{base_url}}/auth/logout",
-              "host": ["{{base_url}}"],
-              "path": ["auth", "logout"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
             },
             "description": "Logout and invalidate the current session."
           },
@@ -262,8 +287,12 @@
             ],
             "url": {
               "raw": "{{base_url}}/dashboard",
-              "host": ["{{base_url}}"],
-              "path": ["dashboard"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard"
+              ]
             },
             "description": "Get complete dashboard summary including daily/monthly sales, table summary, popular items, and new products."
           },
@@ -303,8 +332,13 @@
             ],
             "url": {
               "raw": "{{base_url}}/dashboard/daily-sales",
-              "host": ["{{base_url}}"],
-              "path": ["dashboard", "daily-sales"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "daily-sales"
+              ]
             },
             "description": "Get daily sales statistics for today."
           },
@@ -341,8 +375,13 @@
             ],
             "url": {
               "raw": "{{base_url}}/dashboard/daily-sales?date=2024-01-15",
-              "host": ["{{base_url}}"],
-              "path": ["dashboard", "daily-sales"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "daily-sales"
+              ],
               "query": [
                 {
                   "key": "date",
@@ -387,8 +426,13 @@
             ],
             "url": {
               "raw": "{{base_url}}/dashboard/monthly-sales",
-              "host": ["{{base_url}}"],
-              "path": ["dashboard", "monthly-sales"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "monthly-sales"
+              ]
             },
             "description": "Get monthly sales statistics for the current month."
           },
@@ -426,8 +470,13 @@
             ],
             "url": {
               "raw": "{{base_url}}/dashboard/monthly-sales?year=2026&month=1",
-              "host": ["{{base_url}}"],
-              "path": ["dashboard", "monthly-sales"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "monthly-sales"
+              ],
               "query": [
                 {
                   "key": "year",
@@ -479,8 +528,13 @@
             ],
             "url": {
               "raw": "{{base_url}}/dashboard/tables",
-              "host": ["{{base_url}}"],
-              "path": ["dashboard", "tables"]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "tables"
+              ]
             },
             "description": "Get table availability summary."
           },
@@ -519,8 +573,13 @@
             ],
             "url": {
               "raw": "{{base_url}}/dashboard/popular-products?limit=10",
-              "host": ["{{base_url}}"],
-              "path": ["dashboard", "popular-products"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "popular-products"
+              ],
               "query": [
                 {
                   "key": "limit",
@@ -566,8 +625,13 @@
             ],
             "url": {
               "raw": "{{base_url}}/dashboard/new-products?limit=10",
-              "host": ["{{base_url}}"],
-              "path": ["dashboard", "new-products"],
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "dashboard",
+                "new-products"
+              ],
               "query": [
                 {
                   "key": "limit",
@@ -582,6 +646,39 @@
         }
       ],
       "description": "Dashboard endpoints - requires authentication"
+    },
+    {
+      "name": "Revenue Report",
+      "item": [
+        {
+          "name": "New Request",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reports/revenue",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reports",
+                "revenue"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "variable": [
