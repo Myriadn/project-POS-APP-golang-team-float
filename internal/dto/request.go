@@ -99,3 +99,12 @@ type UpdateProductMenuReq struct {
 	Availability string  `json:"availability" binding:"omitempty"`
 	MenuType     string  `json:"menu_type" binding:"omitempty,min=3,max=100"`
 }
+
+type UpdateProfileReq struct {
+	Email           string `json:"email" binding:"omitempty,email"`
+	Username        string `json:"username" binding:"omitempty,min=3,max=20"`
+	NewPassword     string `json:"new_password" binding:"omitempty,min=6"`
+	ConfirmPassword string `json:"confirm_password" binding:"omitempty,min=6"`
+	Address         string `json:"address"`
+	ProfilePicture  string `json:"profile_picture" binding:"omitempty"`
+}
