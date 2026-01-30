@@ -4,6 +4,7 @@ import (
 	"project-POS-APP-golang-team-float/internal/dto"
 	"project-POS-APP-golang-team-float/internal/usecase"
 	"project-POS-APP-golang-team-float/pkg/utils"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -46,4 +47,26 @@ func (a *ProfileAdaptor) UpdateProfile(c *gin.Context) {
 	}
 
 	utils.Success(c, result.Message, nil)
+}
+
+// mendapatkan  semua  user admin
+func (a *ProfileAdaptor) GetAllAdminUser(c *gin.Context) {
+	ctx := c.Request.Context()
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
+	req := dto.FilterRequest{
+		Page:  page,
+		Limit: limit,
+	}
+	if err := c.ShouldBindQuery(&req); err != nil {
+		utils.BadRequest(c, "Parameter salah", nil)
+		return
+	}
+	result, pagination, err := a.ProfileUsecase.GetAllAdminUser(ctx, req)
+	if err != nil {
+		utils.BadRequest(c, err.Error(), nil)
+		return
+	}
+
+	utils.SuccessPaginationResponse(c, 200, "Berhasil mengambil semua daftar admin user", result, &pagination)
 }

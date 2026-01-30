@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"math"
 	"project-POS-APP-golang-team-float/internal/data/repository"
 	"project-POS-APP-golang-team-float/internal/dto"
 	"project-POS-APP-golang-team-float/pkg/utils"
@@ -13,6 +14,7 @@ type ProfileUsecase struct {
 
 type ProfileUsecaseInterface interface {
 	UpdateProfileUsecase(ctx context.Context, id uint, req dto.UpdateProfileReq) (*dto.MessageResponse, error)
+	GetAllAdminUser(ctx context.Context, req dto.FilterRequest) ([]*dto.GetlAllAdminResponse, dto.Pagination, error)
 }
 
 func NewProfileUsecase(repo repository.ProfileRepoInterface) ProfileUsecaseInterface {
@@ -55,4 +57,39 @@ func (b *ProfileUsecase) UpdateProfileUsecase(ctx context.Context, id uint, req 
 	}
 
 	return &dto.MessageResponse{Message: "Berhasil update data profile"}, nil
+}
+
+// mendapatkan data admin
+func (b *ProfileUsecase) GetAllAdminUser(ctx context.Context, req dto.FilterRequest) ([]*dto.GetlAllAdminResponse, dto.Pagination, error) {
+	if req.Page == 0 {
+		req.Page = 1
+	}
+	if req.Limit == 0 {
+		req.Limit = 6
+	}
+
+	adminUser, total, err := b.repo.GetAllAdminUser(ctx, req)
+	if err != nil {
+		return nil, dto.Pagination{}, err
+	}
+
+	var adminUserResponse []*dto.GetlAllAdminResponse
+	for _, t := range adminUser {
+		row := dto.GetlAllAdminResponse{
+			ID:       t.ID,
+			Email:    t.Email,
+			FullName: t.FullName,
+			RoleName: t.Role.Name,
+		}
+		adminUserResponse = append(adminUserResponse, &row)
+	}
+	totalPages := int(math.Ceil(float64(total) / float64(req.Limit)))
+
+	pagination := dto.Pagination{
+		CurrentPage:  req.Page,
+		Limit:        req.Limit,
+		TotalPages:   totalPages,
+		TotalRecords: total,
+	}
+	return adminUserResponse, pagination, nil
 }

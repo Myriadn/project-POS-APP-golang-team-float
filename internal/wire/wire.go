@@ -134,6 +134,10 @@ func wireProfile(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middlewar
 	Profile.Use(authMw.Authenticate())
 	{
 		Profile.PATCH("/update", ProfileAdaptor.UpdateProfile)
-
+	}
+	ManageAccsess := router.Group("/manage-accsess")
+	ManageAccsess.Use(authMw.Authenticate())
+	{
+		ManageAccsess.GET("", ProfileAdaptor.GetAllAdminUser)
 	}
 }
