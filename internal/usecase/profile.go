@@ -15,6 +15,7 @@ type ProfileUsecase struct {
 type ProfileUsecaseInterface interface {
 	UpdateProfileUsecase(ctx context.Context, id uint, req dto.UpdateProfileReq) (*dto.MessageResponse, error)
 	GetAllAdminUser(ctx context.Context, req dto.FilterRequest) ([]*dto.GetlAllAdminResponse, dto.Pagination, error)
+	UpdateAccsessControl(ctx context.Context, userID uint, req dto.AccsessReq) (*dto.MessageResponse, error)
 }
 
 func NewProfileUsecase(repo repository.ProfileRepoInterface) ProfileUsecaseInterface {
@@ -92,4 +93,13 @@ func (b *ProfileUsecase) GetAllAdminUser(ctx context.Context, req dto.FilterRequ
 		TotalRecords: total,
 	}
 	return adminUserResponse, pagination, nil
+}
+
+func (b *ProfileUsecase) UpdateAccsessControl(ctx context.Context, userID uint, req dto.AccsessReq) (*dto.MessageResponse, error) {
+
+	err := b.repo.UpdateAccsessControl(ctx, userID, req.PermissionID)
+	if err != nil {
+		return nil, err
+	}
+	return &dto.MessageResponse{Message: "berhasil memblokir accsess admin"}, nil
 }

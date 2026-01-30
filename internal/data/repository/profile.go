@@ -14,6 +14,7 @@ type ProfileRepo struct {
 type ProfileRepoInterface interface {
 	UpdateProfileUser(ctx context.Context, id uint, data map[string]interface{}) error
 	GetAllAdminUser(ctx context.Context, f dto.FilterRequest) ([]*entity.User, int64, error)
+	UpdateAccsessControl(ctx context.Context, userID uint, permissionID []uint) error
 }
 
 func NewProfileRepo(db *gorm.DB) ProfileRepoInterface {
@@ -53,4 +54,29 @@ func (b *ProfileRepo) GetAllAdminUser(ctx context.Context, f dto.FilterRequest) 
 	}
 
 	return user, totalItems, nil
+}
+
+// pemblokiran akses user
+func (b *ProfileRepo) UpdateAccsessControl(ctx context.Context, userID uint, permissionID []uint) error {
+	return b.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := tx.Unscoped().Where("user_id = ?", userID).Delete(&entity.UserPermission{}).Error; err != nil {
+			return err
+		}
+		if len(permissionID) == 0 {
+			return nil
+		}
+		var newPermissions []entity.UserPermission
+
+		for _, pid := range permissionID {
+			newPermissions = append(newPermissions, entity.UserPermission{
+				UserID:       userID,
+				PermissionID: pid,
+			})
+		}
+		if err := tx.Create(&newPermissions).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
 }
