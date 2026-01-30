@@ -61,6 +61,10 @@ func main() {
 	repoProduct := repository.NewProductMenuRepo(db)
 	repoReport := repository.NewReportRepo(db)
 	repoProfile := repository.NewProfileRepo(db)
+	repoNotification := repository.NewNotificationRepository(db)
+	ReservationRepo := repository.NewReservationRepository(db)
+	orderRepo := repository.NewOrderRepository(db)
+
 
 	// Email Service
 	emailSvc := email.NewSMTPService(email.SMTPConfig{
@@ -75,6 +79,9 @@ func main() {
 	router := wire.Wiring(wire.WireConfig{
 		Repo:             repo,
 		RepoSM:           repoSM,
+		OrderRepo:        orderRepo, // add if exists
+		ReservationRepo:  ReservationRepo, // add if exists
+		NotificationRepo: repoNotification,
 		Category:         repoCategory,
 		Product:          repoProduct,
 		EmailSvc:         emailSvc,

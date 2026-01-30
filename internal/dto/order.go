@@ -1,15 +1,15 @@
 package dto
 
 type OrderItemRequest struct {
-	ProductID int `json:"product_id"`
-	Quantity  int `json:"quantity"`
+	ProductID int `json:"product_id" binding:"required,gt=0"`
+	Quantity  int `json:"quantity" binding:"required,gt=0"`
 }
 
 type CreateOrderRequest struct {
-	CustomerName    string             `json:"customer_name"`
-	TableID         int                `json:"table_id"`
-	OrderItems      []OrderItemRequest `json:"order_items"`
-	PaymentMethodID int                `json:"payment_method_id"`
+	CustomerName    string             `json:"customer_name" binding:"required,min=3"`
+	TableID         int                `json:"table_id" binding:"required,gt=0"`
+	OrderItems      []OrderItemRequest `json:"order_items" binding:"required,dive,required"`
+	PaymentMethodID int                `json:"payment_method_id" binding:"required,gt=0"`
 }
 
 type UpdateOrderRequest struct {

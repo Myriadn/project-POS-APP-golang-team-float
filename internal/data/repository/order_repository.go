@@ -2,11 +2,13 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"project-POS-APP-golang-team-float/internal/data/entity"
 	"project-POS-APP-golang-team-float/internal/dto"
 
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type OrderRepository interface {
@@ -75,9 +77,21 @@ func (r *orderRepository) CreateOrder(ctx context.Context, req dto.CreateOrderRe
 	}
 	subtotal := 0.0
 	var items []entity.OrderItem
+	// Cek dan kurangi stok produk
+	tx := r.db.WithContext(ctx).Begin()
 	for _, item := range req.OrderItems {
 		var product entity.Product
-		if err := r.db.WithContext(ctx).First(&product, item.ProductID).Error; err != nil {
+		if err := tx.Set("gorm:query_option", "FOR UPDATE").First(&product, item.ProductID).Error; err != nil {
+			tx.Rollback()
+			return dto.OrderResponse{}, err
+		}
+		if product.Stock < item.Quantity {
+			tx.Rollback()
+			return dto.OrderResponse{}, errors.New("stok produk tidak cukup untuk produk: " + product.Name)
+		}
+		// Kurangi stok
+		if err := tx.Model(&product).UpdateColumn("stock", gorm.Expr("stock - ?", item.Quantity)).Error; err != nil {
+			tx.Rollback()
 			return dto.OrderResponse{}, err
 		}
 		itemTotal := product.Price * float64(item.Quantity)
@@ -94,10 +108,12 @@ func (r *orderRepository) CreateOrder(ctx context.Context, req dto.CreateOrderRe
 	order.Total = subtotal + order.TaxAmount
 	order.OrderItems = items
 
-	err := r.db.WithContext(ctx).Create(&order).Error
+	err := tx.Create(&order).Error
 	if err != nil {
+		tx.Rollback()
 		return dto.OrderResponse{}, err
 	}
+	tx.Commit()
 	return toOrderResponse(order), nil
 }
 

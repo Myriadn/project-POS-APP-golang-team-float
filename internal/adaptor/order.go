@@ -8,6 +8,7 @@ import (
 	"project-POS-APP-golang-team-float/internal/usecase"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
 type OrderAdaptor struct {
@@ -32,7 +33,16 @@ func (a *OrderAdaptor) ListOrders(c *gin.Context) {
 func (a *OrderAdaptor) CreateOrder(c *gin.Context) {
 	var req dto.CreateOrderRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		// Cek error validasi dan tampilkan field spesifik
+		if verrs, ok := err.(validator.ValidationErrors); ok {
+			out := make(map[string]string)
+			for _, e := range verrs {
+				out[e.Field()] = e.Error()
+			}
+			c.JSON(http.StatusBadRequest, gin.H{"validation_error": out})
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
 		return
 	}
 	order, err := a.orderUC.CreateOrder(c.Request.Context(), req)
