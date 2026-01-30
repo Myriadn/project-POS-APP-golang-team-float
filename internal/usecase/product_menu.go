@@ -37,6 +37,8 @@ func (b *ProductMenuUsecase) CreateNewProductUsecase(ctx context.Context, req dt
 		Image:        req.Image,
 		Availability: req.Availability,
 		MenuType:     req.MenuType,
+		Unit:         req.Unit,
+		Status:       req.Status,
 	}
 	err := b.repo.CreateNewProduct(ctx, newProductMenu)
 	if err != nil {
@@ -74,6 +76,12 @@ func (b *ProductMenuUsecase) UpdateProductMenuUsecase(ctx context.Context, id ui
 	if req.MenuType != "" {
 		updateData["menu_type"] = req.MenuType
 	}
+	if req.Unit != "" {
+		updateData["unit"] = req.Unit
+	}
+	if req.Status != "" {
+		updateData["status"] = req.Status
+	}
 
 	if len(updateData) == 0 {
 		return &dto.MessageResponse{Message: "Tidak ada data yang perlu diubah"}, nil
@@ -102,6 +110,8 @@ func (b *ProductMenuUsecase) GetDetailProductMenu(ctx context.Context, id uint) 
 		CategotyName: product.Category.Name,
 		Image:        product.Image,
 		Availability: product.Availability,
+		Status:       product.Status,
+		Unit:         product.Unit,
 	}
 	return resp, &dto.MessageResponse{Message: "berhasil mengambil detail product menu"}, nil
 }
@@ -130,6 +140,7 @@ func (b *ProductMenuUsecase) GetAllProductMenu(ctx context.Context, req dto.Filt
 			CategotyName: t.Category.Name,
 			Image:        t.Image,
 			Availability: t.Availability,
+			Status:       t.Status,
 		}
 		productResponse = append(productResponse, &row)
 	}

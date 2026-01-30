@@ -173,8 +173,8 @@ func (b *StaffManagementUsecase) GetAllStaffManagement(ctx context.Context, req 
 			Phone:    t.Phone,
 			RoleName: t.Role.Name,
 			Salary:   t.Salary,
-			Age:      strconv.Itoa(now.Year()-t.DateOfBirth.Year()) + "yr",
-			Timing:   t.ShiftStart + "to" + t.ShiftEnd,
+			Age:      strconv.Itoa(now.Year()-t.DateOfBirth.Year()) + " yr",
+			Timing:   t.ShiftStart + " to " + t.ShiftEnd,
 		}
 		staffResponse = append(staffResponse, &row)
 	}
