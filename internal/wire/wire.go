@@ -138,6 +138,6 @@ func wireProfile(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middlewar
 	ManageAccsess := router.Group("/manage-accsess")
 	ManageAccsess.Use(authMw.Authenticate())
 	{
-		ManageAccsess.GET("", ProfileAdaptor.GetAllAdminUser)
+		ManageAccsess.GET("/admin", ProfileAdaptor.GetAllAdminUser)
 	}
 }
