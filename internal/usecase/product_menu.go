@@ -37,6 +37,8 @@ func (b *ProductMenuUsecase) CreateNewProductUsecase(ctx context.Context, req dt
 		Image:        req.Image,
 		Availability: req.Availability,
 		MenuType:     req.MenuType,
+		Unit:         req.Unit,
+		Status:       req.Status,
 	}
 	err := b.repo.CreateNewProduct(ctx, newProductMenu)
 	if err != nil {
@@ -73,6 +75,12 @@ func (b *ProductMenuUsecase) UpdateProductMenuUsecase(ctx context.Context, id ui
 	}
 	if req.MenuType != "" {
 		updateData["menu_type"] = req.MenuType
+	}
+	if req.Unit != "" {
+		updateData["unit"] = req.Unit
+	}
+	if req.Status != "" {
+		updateData["status"] = req.Status
 	}
 
 	if len(updateData) == 0 {

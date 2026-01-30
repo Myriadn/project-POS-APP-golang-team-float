@@ -86,6 +86,8 @@ type CreateNewProductMenuReq struct {
 	Price        float64 `json:"price" binding:"required"`
 	Availability string  `json:"availability" binding:"required"`
 	MenuType     string  `json:"menu_type" binding:"required,min=3,max=100"`
+	Unit         string  `json:"unit" binding:"required,min=3,max=50"`
+	Status       string  `json:"status" binding:"required,min=3,max=20"`
 }
 
 // request untuk mengedit product
@@ -98,4 +100,6 @@ type UpdateProductMenuReq struct {
 	Price        float64 `json:"price" binding:"omitempty"`
 	Availability string  `json:"availability" binding:"omitempty"`
 	MenuType     string  `json:"menu_type" binding:"omitempty,min=3,max=100"`
+	Unit         string  `json:"unit" binding:"omitempty,min=3,max=50"`
+	Status       string  `json:"status" binding:"omitempty,min=3,max=20"`
 }

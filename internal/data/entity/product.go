@@ -15,6 +15,8 @@ type Product struct {
 	Price        float64        `gorm:"type:decimal(15,2);not null" json:"price"`
 	Availability string         `gorm:"size:20;default:'in_stock'" json:"availability"` // in_stock, out_of_stock
 	MenuType     string         `gorm:"size:50;default:'normal'" json:"menu_type"`      // normal, special_deals, new_year_special, desserts_and_drinks
+	Unit         string         `gorm:"size:50;default:'piece'" json:"unit"`            //piece,litre,kg,gram,ml
+	Status       string         `gorm:"size:20;default:'active'" json:"status"`         //active, inactive
 	Stock        int            `gorm:"not null;default:0" json:"stock"`
 	CreatedAt    time.Time      `json:"created_at"`
 	UpdatedAt    time.Time      `json:"updated_at"`
