@@ -8,6 +8,7 @@ import (
 type Usecase struct {
 	repo                   *repository.Repository
 	StaffManagementUsecase StaffManagementUsecaseInterface
+	OrderUsecase           OrderUsecaseInterface
 	emailSvc               EmailService
 	otpExpireMinutes       int
 	sessionExpireHrs       int
@@ -19,12 +20,14 @@ type EmailService interface {
 }
 
 func NewUsecase(repo *repository.Repository, repoSM repository.StaffManagementRepoInterface, emailSvc EmailService, otpExpireMinutes, sessionExpireHrs int) *Usecase {
+	orderRepo := repository.NewOrderRepository(repo.DB())
 	return &Usecase{
 		repo:                   repo,
 		emailSvc:               emailSvc,
 		otpExpireMinutes:       otpExpireMinutes,
 		sessionExpireHrs:       sessionExpireHrs,
 		StaffManagementUsecase: NewStaffManagementUsecase(repoSM),
+		OrderUsecase:           NewOrderUsecase(orderRepo),
 	}
 }
 

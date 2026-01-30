@@ -29,8 +29,25 @@ func Wiring(cfg WireConfig) *gin.Engine {
 	wireAuth(api, uc, authMw)
 	wireDashboard(api, uc, authMw)
 	wireStaffManagement(api, uc, authMw)
+	wireOrders(api, uc, authMw)
 
 	return router
+}
+
+func wireOrders(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
+	orderAdaptor := adaptor.NewOrderAdaptor(uc.OrderUsecase)
+
+	orders := router.Group("/orders")
+	orders.Use(authMw.Authenticate())
+	{
+		orders.GET("", orderAdaptor.ListOrders)
+		orders.POST("", orderAdaptor.CreateOrder)
+		orders.PUT(":id", orderAdaptor.UpdateOrder)
+		orders.DELETE(":id", orderAdaptor.DeleteOrder)
+	}
+
+	router.GET("/tables/available", authMw.Authenticate(), orderAdaptor.ListAvailableTables)
+	router.GET("/payment-methods", authMw.Authenticate(), orderAdaptor.ListPaymentMethods)
 }
 
 func wireAuth(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
