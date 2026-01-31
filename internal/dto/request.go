@@ -60,6 +60,13 @@ type FilterRequest struct {
 	Limit    int    `form:"limit"`
 	SortBy   string `form:"sort_by"`
 	MenuType string `form:"menu_type"`
+	Category string `form:"category"`
+	Status   string `form:"status"`
+	Stock    string `form:"stock"`
+	Value    string `form:"value"`
+	Piece    string `form:"piece"`
+	PriceMin string `form:"price_min"`
+	PriceMax string `form:"price_max"`
 }
 
 // request untuk membuat category menu
@@ -86,6 +93,8 @@ type CreateNewProductMenuReq struct {
 	Price        float64 `json:"price" binding:"required"`
 	Availability string  `json:"availability" binding:"required"`
 	MenuType     string  `json:"menu_type" binding:"required,min=3,max=100"`
+	Unit         string  `json:"unit" binding:"required,min=3,max=50"`
+	Status       string  `json:"status" binding:"required,min=3,max=20"`
 }
 
 // request untuk mengedit product
@@ -98,6 +107,8 @@ type UpdateProductMenuReq struct {
 	Price        float64 `json:"price" binding:"omitempty"`
 	Availability string  `json:"availability" binding:"omitempty"`
 	MenuType     string  `json:"menu_type" binding:"omitempty,min=3,max=100"`
+	Unit         string  `json:"unit" binding:"omitempty,min=3,max=50"`
+	Status       string  `json:"status" binding:"omitempty,min=3,max=20"`
 }
 
 type UpdateProfileReq struct {
@@ -107,4 +118,9 @@ type UpdateProfileReq struct {
 	ConfirmPassword string `json:"confirm_password" binding:"omitempty,min=6"`
 	Address         string `json:"address"`
 	ProfilePicture  string `json:"profile_picture" binding:"omitempty"`
+}
+
+// request pemblokiran  akses
+type AccsessReq struct {
+	PermissionID []uint `json:"permission_id" binding:"required,min=0"`
 }
