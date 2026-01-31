@@ -8,7 +8,7 @@ import (
 
 type OrderUsecaseInterface interface {
 	ListOrders(ctx context.Context) ([]dto.OrderResponse, error)
-	CreateOrder(ctx context.Context, req dto.CreateOrderRequest) (dto.OrderResponse, error)
+	CreateOrder(ctx context.Context, req dto.CreateOrderRequest, userID uint) (dto.OrderResponse, error)
 	UpdateOrder(ctx context.Context, id int, req dto.UpdateOrderRequest) (dto.OrderResponse, error)
 	DeleteOrder(ctx context.Context, id int) error
 	ListAvailableTables(ctx context.Context) ([]dto.TableResponse, error)
@@ -27,8 +27,8 @@ func (o *OrderUsecase) ListOrders(ctx context.Context) ([]dto.OrderResponse, err
 	return o.repo.ListOrders(ctx)
 }
 
-func (o *OrderUsecase) CreateOrder(ctx context.Context, req dto.CreateOrderRequest) (dto.OrderResponse, error) {
-	return o.repo.CreateOrder(ctx, req)
+func (o *OrderUsecase) CreateOrder(ctx context.Context, req dto.CreateOrderRequest, userID uint) (dto.OrderResponse, error) {
+	return o.repo.CreateOrder(ctx, req, userID)
 }
 
 func (o *OrderUsecase) UpdateOrder(ctx context.Context, id int, req dto.UpdateOrderRequest) (dto.OrderResponse, error) {

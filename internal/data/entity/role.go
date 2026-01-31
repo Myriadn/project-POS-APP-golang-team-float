@@ -6,7 +6,7 @@ import (
 
 type Role struct {
 	ID          uint      `gorm:"primaryKey" json:"id"`
-	Name        string    `gorm:"uniqueIndex;size:50;not null" json:"name"`
+	Name        string    `gorm:"uniqueIndex:uni_roles_name;size:50;not null" json:"name"`
 	Description string    `gorm:"type:text" json:"description"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`

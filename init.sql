@@ -457,23 +457,25 @@ CREATE TRIGGER update_admin_permissions_updated_at
 -- );
 
 -- Create admin permissions for superadmin (all access)
-INSERT INTO admin_permissions (
-    user_id,
-    dashboard,
-    reports,
-    inventory,
-    orders,
-    customers,
-    settings
-) VALUES (
-    1, -- user_id = 1 (superadmin)
-    true,
-    true,
-    true,
-    true,
-    true,
-    true
-);
+-- INSERT INTO admin_permissions (
+--     user_id,
+--     dashboard,
+--     reports,
+--     inventory,
+--     orders,
+--     customers,
+--     settings
+-- ) VALUES (
+--     1, -- user_id = 1 (superadmin)
+--     true,
+--     true,
+--     true,
+--     true,
+--     true,
+--     true
+-- );
+
+
 
 -- =====================================================
 -- COMMENTS

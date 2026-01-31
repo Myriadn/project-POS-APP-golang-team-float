@@ -45,7 +45,14 @@ func (a *OrderAdaptor) CreateOrder(c *gin.Context) {
 		}
 		return
 	}
-	order, err := a.orderUC.CreateOrder(c.Request.Context(), req)
+
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "user not authenticated"})
+		return
+	}
+
+	order, err := a.orderUC.CreateOrder(c.Request.Context(), req, userID.(uint))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -13,7 +13,7 @@ import (
 
 type OrderRepository interface {
 	ListOrders(ctx context.Context) ([]dto.OrderResponse, error)
-	CreateOrder(ctx context.Context, req dto.CreateOrderRequest) (dto.OrderResponse, error)
+	CreateOrder(ctx context.Context, req dto.CreateOrderRequest, userID uint) (dto.OrderResponse, error)
 	UpdateOrder(ctx context.Context, id int, req dto.UpdateOrderRequest) (dto.OrderResponse, error)
 	DeleteOrder(ctx context.Context, id int) error
 	ListAvailableTables(ctx context.Context) ([]dto.TableResponse, error)
@@ -65,12 +65,13 @@ func (r *orderRepository) ListOrders(ctx context.Context) ([]dto.OrderResponse, 
 	return result, nil
 }
 
-func (r *orderRepository) CreateOrder(ctx context.Context, req dto.CreateOrderRequest) (dto.OrderResponse, error) {
+func (r *orderRepository) CreateOrder(ctx context.Context, req dto.CreateOrderRequest, userID uint) (dto.OrderResponse, error) {
 	const taxRate = 0.10
 	order := entity.Order{
 		CustomerName:    req.CustomerName,
 		TableID:         uintPtr(uint(req.TableID)),
 		PaymentMethodID: uintPtr(uint(req.PaymentMethodID)),
+		UserID:          userID,  // ✅ Set dari parameter
 		Status:          "ready",
 		TaxRate:         taxRate * 100,
 		OrderDate:       Now(),

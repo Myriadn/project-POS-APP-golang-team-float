@@ -23,7 +23,7 @@ type Order struct {
 	Table           *Table         `gorm:"foreignKey:TableID" json:"table,omitempty"`
 	User            User           `gorm:"foreignKey:UserID" json:"user,omitzero"`
 	PaymentMethod   *PaymentMethod `gorm:"foreignKey:PaymentMethodID" json:"payment_method,omitempty"`
-	OrderItems      []OrderItem    `gorm:"foreignKey:OrderID" json:"order_items,omitempty"`
+	OrderItems      []OrderItem    `gorm:"foreignKey:OrderID;constraint:OnDelete:CASCADE" json:"order_items,omitempty"`
 }
 
 func (Order) TableName() string {
@@ -38,7 +38,7 @@ type OrderItem struct {
 	UnitPrice  float64   `gorm:"type:decimal(15,2);not null" json:"unit_price"`
 	TotalPrice float64   `gorm:"type:decimal(15,2);not null" json:"total_price"`
 	CreatedAt  time.Time `json:"created_at"`
-	Order      Order     `gorm:"foreignKey:OrderID" json:"-"`
+	Order      Order     `gorm:"foreignKey:OrderID;constraint:OnDelete:CASCADE" json:"-"`
 	Product    Product   `gorm:"foreignKey:ProductID" json:"product,omitzero"`
 }
 
