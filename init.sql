@@ -14,7 +14,6 @@ DROP TABLE IF EXISTS order_items CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS payment_methods CASCADE;
-DROP TABLE IF EXISTS inventory CASCADE;
 DROP TABLE IF EXISTS tables CASCADE;
 DROP TABLE IF EXISTS products CASCADE;
 DROP TABLE IF EXISTS categories CASCADE;
@@ -110,32 +109,17 @@ CREATE TABLE products (
     id SERIAL PRIMARY KEY,
     category_id INTEGER NOT NULL REFERENCES categories(id) ON DELETE RESTRICT,
     name VARCHAR(255) NOT NULL,
-    item_id VARCHAR(50) UNIQUE,
     description TEXT,
     image VARCHAR(500),
     price DECIMAL(15, 2) NOT NULL CHECK (price >= 0),
     availability VARCHAR(20) DEFAULT 'in_stock' CHECK (availability IN ('in_stock', 'out_of_stock')),
     menu_type VARCHAR(50) DEFAULT 'normal' CHECK (menu_type IN ('normal', 'special_deals', 'new_year_special', 'desserts_and_drinks')),
+    stock INTEGER NOT NULL DEFAULT 0 CHECK (stock >= 0),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     deleted_at TIMESTAMP WITH TIME ZONE
 );
 
--- =====================================================
--- 7. INVENTORY TABLE
--- Stok dan inventaris produk
--- =====================================================
-CREATE TABLE inventory (
-    id SERIAL PRIMARY KEY,
-    product_id INTEGER UNIQUE NOT NULL REFERENCES products(id) ON DELETE CASCADE,
-    stock_quantity INTEGER NOT NULL DEFAULT 0 CHECK (stock_quantity >= 0),
-    status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'inactive')),
-    unit VARCHAR(50) DEFAULT 'piece' CHECK (unit IN ('piece', 'litre', 'kg', 'gram', 'ml')),
-    min_price DECIMAL(15, 2),
-    max_price DECIMAL(15, 2),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
 
 -- =====================================================
 -- 8. TABLES TABLE
@@ -301,10 +285,6 @@ CREATE INDEX idx_products_menu_type ON products(menu_type);
 CREATE INDEX idx_products_deleted_at ON products(deleted_at);
 CREATE INDEX idx_products_created_at ON products(created_at);
 
--- Inventory indexes
-CREATE INDEX idx_inventory_product_id ON inventory(product_id);
-CREATE INDEX idx_inventory_status ON inventory(status);
-CREATE INDEX idx_inventory_stock_quantity ON inventory(stock_quantity);
 
 -- Tables indexes
 CREATE INDEX idx_tables_status ON tables(status);
@@ -370,10 +350,6 @@ CREATE TRIGGER update_products_updated_at
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_inventory_updated_at
-    BEFORE UPDATE ON inventory
-    FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_tables_updated_at
     BEFORE UPDATE ON tables

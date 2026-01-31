@@ -9,10 +9,12 @@ import (
 	"project-POS-APP-golang-team-float/pkg/email"
 	"project-POS-APP-golang-team-float/pkg/middleware"
 )
-
 type WireConfig struct {
 	Repo             *repository.Repository
 	RepoSM           repository.StaffManagementRepoInterface
+	OrderRepo        repository.OrderRepository
+	ReservationRepo  repository.ReservationRepository
+	NotificationRepo repository.NotificationRepository
 	Category         repository.CategoryMenuRepoInterface
 	Product          repository.ProductMenuRepoInterface
 	Profile          repository.ProfileRepoInterface
@@ -27,8 +29,8 @@ func Wiring(cfg WireConfig) *gin.Engine {
 	api := router.Group("/api")
 
 	// Create shared usecase and middleware
-	uc := usecase.NewUsecase(cfg.Repo, cfg.RepoSM, cfg.Category, cfg.Product, cfg.Profile, cfg.ReportRepo, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
-	authMw := middleware.NewAuthMiddleware(uc, uc) // uc 2 times because both implemented on middleware
+	uc := usecase.NewUsecase(cfg.Repo, cfg.RepoSM, cfg.OrderRepo, cfg.ReservationRepo, cfg.NotificationRepo, cfg.Category, cfg.Product, cfg.Profile, cfg.ReportRepo, cfg.EmailSvc, cfg.OTPExpireMinutes, cfg.SessionExpireHrs)
+	authMw := middleware.NewAuthMiddleware(uc, uc)
 
 	wireAuth(api, uc, authMw)
 	wireDashboard(api, uc, authMw)
@@ -37,8 +39,53 @@ func Wiring(cfg WireConfig) *gin.Engine {
 	wireProductMenu(api, uc, authMw)
 	wireReport(api, uc, authMw)
 	wireProfile(api, uc, authMw)
+	wireOrders(api, uc, authMw)
+	wireReservations(api, uc, authMw)
+	wireNotifications(api, uc, authMw)
 
 	return router
+}
+
+func wireNotifications(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
+       notificationAdaptor := adaptor.NewNotificationAdaptor(uc.NotificationUsecase)
+
+       notifications := router.Group("/notifications")
+       notifications.Use(authMw.Authenticate())
+       {
+	       notifications.GET("", notificationAdaptor.ListNotifications)
+	       notifications.PATCH(":id", notificationAdaptor.UpdateNotificationStatus)
+	       notifications.DELETE(":id", notificationAdaptor.DeleteNotification)
+       }
+}
+
+
+func wireReservations(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
+	reservationAdaptor := adaptor.NewReservationAdaptor(uc.ReservationUsecase)
+
+	reservations := router.Group("/reservations")
+	reservations.Use(authMw.Authenticate())
+	{
+		reservations.GET("", reservationAdaptor.ListReservations)
+		reservations.GET(":id", reservationAdaptor.GetReservationByID)
+		reservations.POST("", reservationAdaptor.CreateReservation)
+		reservations.PATCH(":id", reservationAdaptor.UpdateReservation)
+	}
+}
+
+func wireOrders(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
+	orderAdaptor := adaptor.NewOrderAdaptor(uc.OrderUsecase)
+
+	orders := router.Group("/orders")
+	orders.Use(authMw.Authenticate())
+	{
+		orders.GET("", orderAdaptor.ListOrders)
+		orders.POST("", orderAdaptor.CreateOrder)
+		orders.PUT(":id", orderAdaptor.UpdateOrder)
+		orders.DELETE(":id", orderAdaptor.DeleteOrder)
+	}
+
+	router.GET("/tables/available", authMw.Authenticate(), orderAdaptor.ListAvailableTables)
+	router.GET("/payment-methods", authMw.Authenticate(), orderAdaptor.ListPaymentMethods)
 }
 
 func wireAuth(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
