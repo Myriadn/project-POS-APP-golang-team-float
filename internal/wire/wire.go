@@ -61,7 +61,7 @@ func wireDashboard(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middlew
 
 	dashboard := router.Group("/dashboard")
 	dashboard.Use(authMw.Authenticate())
-	// dashboard.Use(authMw.RequirePermission("view_dashboard"))
+	dashboard.Use(authMw.RequirePermission("view-dashboard"))
 	{
 		dashboard.GET("", dashboardAdaptor.GetDashboardSummary)
 		dashboard.GET("/daily-sales", dashboardAdaptor.GetDailySales)
@@ -123,7 +123,7 @@ func wireReport(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware
 	reports.Use(authMw.Authenticate())
 	{
 
-		reports.GET("/revenue", reportAdaptor.GetRevenueReport)
+		reports.GET("/revenue", authMw.RequirePermission("financial-report"), reportAdaptor.GetRevenueReport)
 	}
 }
 
