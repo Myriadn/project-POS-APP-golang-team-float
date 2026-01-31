@@ -9,6 +9,7 @@ import (
 	"project-POS-APP-golang-team-float/pkg/email"
 	"project-POS-APP-golang-team-float/pkg/middleware"
 )
+
 type WireConfig struct {
 	Repo             *repository.Repository
 	RepoSM           repository.StaffManagementRepoInterface
@@ -47,17 +48,16 @@ func Wiring(cfg WireConfig) *gin.Engine {
 }
 
 func wireNotifications(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
-       notificationAdaptor := adaptor.NewNotificationAdaptor(uc.NotificationUsecase)
+	notificationAdaptor := adaptor.NewNotificationAdaptor(uc.NotificationUsecase)
 
-       notifications := router.Group("/notifications")
-       notifications.Use(authMw.Authenticate())
-       {
-	       notifications.GET("", notificationAdaptor.ListNotifications)
-	       notifications.PATCH(":id", notificationAdaptor.UpdateNotificationStatus)
-	       notifications.DELETE(":id", notificationAdaptor.DeleteNotification)
-       }
+	notifications := router.Group("/notifications")
+	notifications.Use(authMw.Authenticate())
+	{
+		notifications.GET("", notificationAdaptor.ListNotifications)
+		notifications.PATCH(":id", notificationAdaptor.UpdateNotificationStatus)
+		notifications.DELETE(":id", notificationAdaptor.DeleteNotification)
+	}
 }
-
 
 func wireReservations(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
 	reservationAdaptor := adaptor.NewReservationAdaptor(uc.ReservationUsecase)
@@ -65,10 +65,10 @@ func wireReservations(router *gin.RouterGroup, uc *usecase.Usecase, authMw *midd
 	reservations := router.Group("/reservations")
 	reservations.Use(authMw.Authenticate())
 	{
-		reservations.GET("", reservationAdaptor.ListReservations)
-		reservations.GET(":id", reservationAdaptor.GetReservationByID)
-		reservations.POST("", reservationAdaptor.CreateReservation)
-		reservations.PATCH(":id", reservationAdaptor.UpdateReservation)
+		reservations.GET("", authMw.RequirePermission("reservation-read"), reservationAdaptor.ListReservations)
+		reservations.GET(":id", authMw.RequirePermission("reservation-read"), reservationAdaptor.GetReservationByID)
+		reservations.POST("", authMw.RequirePermission("reservation-create"), reservationAdaptor.CreateReservation)
+		reservations.PATCH(":id", authMw.RequirePermission("reservation-update"), reservationAdaptor.UpdateReservation)
 	}
 }
 
@@ -78,14 +78,14 @@ func wireOrders(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware
 	orders := router.Group("/orders")
 	orders.Use(authMw.Authenticate())
 	{
-		orders.GET("", orderAdaptor.ListOrders)
-		orders.POST("", orderAdaptor.CreateOrder)
-		orders.PUT(":id", orderAdaptor.UpdateOrder)
-		orders.DELETE(":id", orderAdaptor.DeleteOrder)
+		orders.GET("", authMw.RequirePermission("order-read"), orderAdaptor.ListOrders)
+		orders.POST("", authMw.RequirePermission("order-create"), orderAdaptor.CreateOrder)
+		orders.PUT(":id", authMw.RequirePermission("order-update"), orderAdaptor.UpdateOrder)
+		orders.DELETE(":id", authMw.RequirePermission("order-delete"), orderAdaptor.DeleteOrder)
 	}
 
-	router.GET("/tables/available", authMw.Authenticate(), orderAdaptor.ListAvailableTables)
-	router.GET("/payment-methods", authMw.Authenticate(), orderAdaptor.ListPaymentMethods)
+	router.GET("/tables/available", authMw.Authenticate(), authMw.RequirePermission("table-available"), orderAdaptor.ListAvailableTables)
+	router.GET("/payment-methods", authMw.Authenticate(), authMw.RequirePermission("payment"), orderAdaptor.ListPaymentMethods)
 }
 
 func wireAuth(router *gin.RouterGroup, uc *usecase.Usecase, authMw *middleware.AuthMiddleware) {
